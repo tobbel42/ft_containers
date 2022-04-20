@@ -5,16 +5,24 @@
 #include <vector>
 #include <iterator> 
 
+#define NSP std
+#define PLN(txt) std::cout << txt << std::endl;
 int main()
 {
-	ft::vector<int>	h(5, 7);
-	//std::vector<char>	j(5, 0);
+	NSP::vector<int>	h(5, 7);
+	NSP::vector<int> 	f(h.begin(), h.end());
 
-	// if (h.begin() >= j.begin())
-	// 	std::cout << "works" << std::endl;
+	PLN(h.size());
+	PLN(h.max_size());
+	PLN(h.capacity());
+	PLN(h.empty());
+	h.resize(300, 0);
+	
+	PLN("h Cap: " << h.capacity());
+	PLN("f Cap: " << f.capacity());
 
-	for (ft::vector<int>::iterator iter = h.begin(); !(iter == h.end()); ++iter)
-		std::cout << iter << std::endl;
+	for (NSP::vector<int>::iterator iter = h.begin(); iter != h.end(); ++iter)
+	 	std::cout << *iter << std::endl;
 
 	return 0;
 }

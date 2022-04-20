@@ -6,7 +6,8 @@ BIN=container_test
 INC=inc/
 
 HFILE=iterator.hpp\
-	vector.hpp
+	vector.hpp\
+	type_traits.hpp
 
 
 HDR= $(addprefix $(INC)/, $(HFILE))

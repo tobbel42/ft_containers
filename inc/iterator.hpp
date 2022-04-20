@@ -58,6 +58,8 @@ class iterator
 		typedef	Category	iterator_category;
 };
 
+
+
 template <class _Iter>
 class reverse_iterator
 	:public iterator<class iterator_traits<_Iter>::difference_type,
@@ -94,7 +96,18 @@ class reverse_iterator
 		reverse_iterator	operator-(difference_type n) {return reverse_iterator(current + n);};
 };
 
-};
+// template <class InputIter>
+// typename iterator_traits<InputIter>::difference_type
+// distance(InputIter first, InputIter last)
+// {
+// 	typename iterator_traits<InputIter>::difference_type dist = 0;
+// 	for(;first != last; ++first)
+// 		++dist;
+// 	return dist;
+// };
+
+
+}; //NSP ft
 
 
 #endif
