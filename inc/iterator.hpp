@@ -62,24 +62,26 @@ class iterator
 
 template <class _Iter>
 class reverse_iterator
-	:public iterator<class iterator_traits<_Iter>::difference_type,
-					class iterator_traits<_Iter>::value_type,
-					class iterator_traits<_Iter>::pointer,
-					class iterator_traits<_Iter>::reference,
-					class iterator_traits<_Iter>::iterator_category>
+	:public iterator<typename	iterator_traits<_Iter>::difference_type,
+					typename	iterator_traits<_Iter>::value_type,
+					typename	iterator_traits<_Iter>::pointer,
+					typename	iterator_traits<_Iter>::reference,
+					typename	iterator_traits<_Iter>::iterator_category>
 {
 	protected:
 		_Iter current;
 	public:
 		typedef _Iter											iterator_type;
-		typedef	class iterator_traits<_Iter>::difference_type	difference_type;
-		typedef class iterator_traits<_Iter>::reference			reference;
-		typedef class iterator_traits<_Iter>::pointer			pointer;
+		typedef	typename iterator_traits<_Iter>::difference_type	difference_type;
+		typedef typename iterator_traits<_Iter>::reference			reference;
+		typedef typename iterator_traits<_Iter>::pointer			pointer;
 		
 		reverse_iterator(): current() {};
 		reverse_iterator(_Iter cpy): current(cpy) {};
-		reverse_iterator(const reverse_iterator<_Iter>& cpy) {*this = cpy;};
-		reverse_iterator&	operator=(const reverse_iterator<_Iter>& rhs) {current = rhs.current();};
+		template <class T>
+			reverse_iterator(const reverse_iterator<T>& cpy) {*this = cpy;};
+		template <class T>
+			reverse_iterator& operator=(const reverse_iterator<T>& rhs) {current = rhs.current(); return *this;};
 
 		reference	operator*() const {_Iter tmp = current; return *(--tmp);};
 		pointer		operator->() const {_Iter tmp = current; return ((--tmp).operator->());};
@@ -94,17 +96,25 @@ class reverse_iterator
  		reverse_iterator	operator+(difference_type n) {return reverse_iterator(current - n);};
 		reverse_iterator&	operator-=(difference_type n) {current += n; return *this;};
 		reverse_iterator	operator-(difference_type n) {return reverse_iterator(current + n);};
+
+		iterator_type	base() const {return current;};
 };
 
-// template <class InputIter>
-// typename iterator_traits<InputIter>::difference_type
-// distance(InputIter first, InputIter last)
-// {
-// 	typename iterator_traits<InputIter>::difference_type dist = 0;
-// 	for(;first != last; ++first)
-// 		++dist;
-// 	return dist;
-// };
+template <class Iter1, class Iter2>
+	bool operator==(const reverse_iterator<Iter1> & rhs, const reverse_iterator<Iter2> & lhs) {return rhs.base() == lhs.base();};
+
+template <class Iter1, class Iter2>
+	bool operator!=(const reverse_iterator<Iter1> & rhs, const reverse_iterator<Iter2> & lhs) {return rhs.base() != lhs.base();};
+
+template <class InputIter>
+typename iterator_traits<InputIter>::difference_type
+distance(InputIter first, InputIter last)
+{
+	typename iterator_traits<InputIter>::difference_type dist = 0;
+	for(;first != last; ++first)
+		++dist;
+	return dist;
+};
 
 
 }; //NSP ft

@@ -87,39 +87,47 @@ namespace ft
 				start(NULL),
 				finish(NULL),
 				end_of_storage(NULL),
-				allocator(alloc)
-			{
-				start = allocator.allocate(n);
-				finish = start + n;
-				end_of_storage = finish;
-				for (size_type i = 0; i < n; ++i)
-					allocator.construct(start.base() + i, val);
-			};
+				allocator(alloc) {assign(n, val);};
 			template<class InputIterator>
 				vector(InputIterator first, InputIterator last, const allocator_type & alloc = allocator_type(),
 				typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type = InputIterator()):
 				start(NULL),
 				finish(NULL),
 				end_of_storage(NULL),
-				allocator(alloc)
+				allocator(alloc) {assign(first, last);};
+			vector(const vector & x):
+				start(NULL),
+				finish(NULL),
+				end_of_storage(NULL),
+				allocator(x.get_allocator())
 			{
-				size_type	n = 0;
-				for(difference_type i = 0;first + i != last; ++i)
-					++n;
-				start = allocator.allocate(n);
-				finish = start + n;
-				end_of_storage = finish;
-				for (size_type i = 0; i < n; ++i)
-					allocator.construct(start.base(), first[i]);
-			}
-			// vector(const vector & x);
+				size_type	xSize = x.size();
+				reserve(xSize);
+				for (size_type i = 0; i < xSize; ++i)
+					allocator.construct(start.base() + i, x[i]);
+				finish = start + xSize;
+				end_of_storage = start + xSize;
+			};
 			~vector()
 			{
-				for (size_type i = 0; i < size(); ++i)
-					allocator.destroy(start.base() + i);
+				clear();
 				if (start.base())
 					allocator.deallocate(start.base(), capacity());
-			}
+			};
+			vector & operator=(const vector& x)
+			{
+				allocator = x.allocator;
+				if (this != &x)
+				{
+					size_type	xSize = x.size();
+					reserve(xSize);
+					end_of_storage = start + xSize;
+					for (size_type i = 0; i < xSize; ++i)
+						allocator.construct(start.base() + i, x[i]);
+					finish = start + xSize;
+				}
+				return (*this);
+			};
 
 			//<Iterators>
 			iterator				begin() {return start;};
@@ -195,13 +203,146 @@ namespace ft
 					allocator.construct(newStart.base() + i, start[i]);
 					allocator.destroy(start.base() + i);
 				}
-				if (start)
-					allocator.deallocate(start, capacity());
+				if (start.base())
+					allocator.deallocate(start.base(), capacity());
 				start = newStart;
 				finish = newStart + oldSize;
 				end_of_storage = newStart + n;
 			}
 		//</Capacity>
+
+		//<ElementAccess>
+			reference 		operator[] (size_type n) {return start.base()[n];};
+			const_reference	operator[] (size_type n) const {return start.base()[n];};
+			reference 		at (size_type n) {
+				if (n >= size())
+					throw std::length_error("vector: at: n out ouf bounds");
+				return start.base()[n];
+			};
+			const_reference at (size_type n) const {
+				if (n >= size())
+					throw std::length_error("vector: at: n out ouf bounds");
+				return start.base()[n];
+			};
+			reference 		front() {return *start.base();};
+			const_reference front() const {return *start.base();};
+			reference 		back() {return *(finish.base() - 1);}
+			const_reference back() const {return *(finish.base() -1);};
+
+		//</ElementAccess>
+
+		//<Modifiers>
+			template <class InputIterator>
+				void assign (InputIterator first, InputIterator last,
+				typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type = InputIterator())
+			{
+				size_type n = static_cast<size_type>(distance(first, last));
+				for (size_type i = 0; i < size(); ++i)
+					allocator.destroy(start.base() + i);
+				if (n > capacity())
+				{
+					allocator.deallocate(start.base(), capacity());
+					start = allocator.allocate(n);
+					end_of_storage = start + n;
+				}
+				for (size_type i = 0; first != last; ++i, ++first)
+					allocator.construct(start.base() + i, *first);
+				finish = start + n;
+			};
+
+			void assign (size_type n, const value_type& val)
+			{
+				for (size_type i = 0; i < size(); ++i)
+					allocator.destroy(start.base() + i);
+				if (n > capacity())
+				{
+					allocator.deallocate(start.base(), capacity());
+					start = allocator.allocate(n);
+					end_of_storage = start + n;
+				}
+				for (size_type i = 0; i < n; ++i)
+					allocator.construct(start.base() + i, val);
+				finish = start + n;
+			};
+
+			void push_back (const value_type& val)
+			{
+				if (size() == capacity())
+					reserve(size() + 1);
+				*finish.base() = val;
+				++finish;
+			};
+
+			void pop_back() {
+				allocator.destroy(finish.base() - 1);
+				--finish;
+			};
+
+			iterator insert (iterator position, const value_type& val){
+				if (size() >= capacity())
+				{
+					difference_type offset = position - start;
+					reserve(size() + 1);
+					position = start + offset;
+				}
+				if (position != finish)
+				{
+					for (reverse_iterator iter = rbegin(); iter.base() != position; ++iter)
+						*iter.base() = *(iter.base() - 1);
+				}
+				*position.base() = val;
+				++finish;
+				return position;
+			};
+
+			void insert (iterator position, size_type n, const value_type& val){
+				if (size() + n > capacity())
+				{
+					difference_type offset = position - start;
+					reserve(size() + n);
+					position = start + offset;
+				}
+				if (position != finish)
+				{
+					for (reverse_iterator iter = rbegin(); iter.base() != position; ++iter)
+						*iter.base() = *(iter.base() - n);
+				}
+				for (size_type i = 0; i < n; ++i)
+					*(position.base() + i) = val;
+				finish += n;	
+			};
+			template <class InputIterator>
+				void insert (iterator position, InputIterator first, InputIterator last,
+				typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type = InputIterator()) {
+					size_type n = static_cast<size_type>(distance(first, last));
+					if (size() + n > capacity())
+					{
+						difference_type offset = position - start;
+						reserve(size() + n);
+						position = start + offset;
+					}
+					if (position != finish)
+					{
+						for (reverse_iterator iter = rbegin(); iter.base() != position; ++iter)
+							*iter.base() = *(iter.base() - n);
+					}
+					for (size_type i = 0; i < n; ++i)
+						*(position.base() + i) = *(first.base() + i);
+					finish += n;					
+			};
+
+
+			void clear ()
+			{
+				for (size_type i = 0; i < size(); ++i)
+					allocator.destroy(start.base() + i);
+				finish = start;
+			};
+		//</Modifiers>
+
+		//<Allocator>
+			allocator_type get_allocator() const {return allocator;};
+		//</Allocator>
 
 		private:
 			iterator	start;
