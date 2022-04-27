@@ -7,10 +7,11 @@ INC=inc/
 
 HFILE=iterator.hpp\
 	vector.hpp\
-	type_traits.hpp
+	type_traits.hpp\
+	utils.hpp
 
 
-HDR= $(addprefix $(INC)/, $(HFILE))
+HDR=$(addprefix $(INC)/, $(HFILE))
 
 SDIR=src
 
@@ -27,7 +28,7 @@ OBJ=$(addprefix $(ODIR)/, $(OFILE))
 all:$(BIN)
 
 $(BIN): $(ODIR) $(OBJ) $(SRC) $(HDR)
-	$(CC) $(C_FLAGS) $(OBJ) -I $(INC) -o $(BIN) 
+	$(CC) $(C_FLAGS) $(OBJ) -I $(INC) -o $(BIN)
 
 $(ODIR):
 	mkdir obj

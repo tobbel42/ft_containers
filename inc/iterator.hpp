@@ -2,16 +2,22 @@
 # define ITERATOR_HPP
 
 #include <memory>
+#include <iterator>
 
 namespace ft
 { 
 
-//iterator traits
-struct	input_iterator_tag {};
-struct	output_iterator_tag {};
-struct	forward_iterator_tag		: public input_iterator_tag {};
-struct	bidirectional_iterator_tag	: public forward_iterator_tag {};
-struct	random_access_iterator_tag	: public bidirectional_iterator_tag {};
+//iterator traits //for compatiblity with the std::containers
+typedef std::input_iterator_tag	input_iterator_tag ;
+typedef std::output_iterator_tag output_iterator_tag;
+typedef std::forward_iterator_tag forward_iterator_tag;
+typedef std::bidirectional_iterator_tag bidirectional_iterator_tag;
+typedef std::random_access_iterator_tag random_access_iterator_tag;
+// struct	input_iterator_tag {};
+// struct	output_iterator_tag {};
+// struct	forward_iterator_tag		: public input_iterator_tag {};
+// struct	bidirectional_iterator_tag	: public forward_iterator_tag {};
+// struct	random_access_iterator_tag	: public bidirectional_iterator_tag {};
 
 template <class Iterator>
 class iterator_traits
@@ -71,7 +77,7 @@ class reverse_iterator
 	protected:
 		_Iter current;
 	public:
-		typedef _Iter											iterator_type;
+		typedef _Iter												iterator_type;
 		typedef	typename iterator_traits<_Iter>::difference_type	difference_type;
 		typedef typename iterator_traits<_Iter>::reference			reference;
 		typedef typename iterator_traits<_Iter>::pointer			pointer;
@@ -81,11 +87,11 @@ class reverse_iterator
 		template <class T>
 			reverse_iterator(const reverse_iterator<T>& cpy) {*this = cpy;};
 		template <class T>
-			reverse_iterator& operator=(const reverse_iterator<T>& rhs) {current = rhs.current(); return *this;};
+			reverse_iterator& operator=(const reverse_iterator<T>& rhs) {current = rhs.base(); return *this;};
 
 		reference	operator*() const {_Iter tmp = current; return *(--tmp);};
 		pointer		operator->() const {_Iter tmp = current; return ((--tmp).operator->());};
-		reference	operator[](difference_type n) const {return *(*this + n);};
+		reference	operator[](difference_type n) const {return *(base() - n - 1);};
 
 		reverse_iterator&	operator++() {--current; return *this;};
 		reverse_iterator	operator++(int) {reverse_iterator tmp(*this); --current; return tmp;};
@@ -100,21 +106,38 @@ class reverse_iterator
 		iterator_type	base() const {return current;};
 };
 
+template <class Iter>
+reverse_iterator<Iter> operator+(typename reverse_iterator<Iter>::difference_type n, const reverse_iterator<Iter>& it) {
+	return reverse_iterator<Iter>(it.base() - n);
+};
+
+template <class Iter1, class Iter2>
+typename reverse_iterator<Iter1>::difference_type operator-(const reverse_iterator<Iter1> & lhs, const reverse_iterator<Iter2> &rhs) {
+	return (rhs.base().base() - lhs.base().base());
+};
+
 template <class Iter1, class Iter2>
 	bool operator==(const reverse_iterator<Iter1> & rhs, const reverse_iterator<Iter2> & lhs) {return rhs.base() == lhs.base();};
-
 template <class Iter1, class Iter2>
 	bool operator!=(const reverse_iterator<Iter1> & rhs, const reverse_iterator<Iter2> & lhs) {return rhs.base() != lhs.base();};
+template <class Iter1, class Iter2>
+	bool operator>=(const reverse_iterator<Iter1> & rhs, const reverse_iterator<Iter2> & lhs) {return rhs.base() <= lhs.base();};
+template <class Iter1, class Iter2>
+	bool operator>(const reverse_iterator<Iter1> & rhs, const reverse_iterator<Iter2> & lhs) {return rhs.base() < lhs.base();};
+template <class Iter1, class Iter2>
+	bool operator<=(const reverse_iterator<Iter1> & rhs, const reverse_iterator<Iter2> & lhs) {return rhs.base() >= lhs.base();};
+template <class Iter1, class Iter2>
+	bool operator<(const reverse_iterator<Iter1> & rhs, const reverse_iterator<Iter2> & lhs) {return rhs.base() > lhs.base();};
 
 template <class InputIter>
-typename iterator_traits<InputIter>::difference_type
-distance(InputIter first, InputIter last)
-{
+typename iterator_traits<InputIter>::difference_type distance(InputIter first, InputIter last) {
 	typename iterator_traits<InputIter>::difference_type dist = 0;
 	for(;first != last; ++first)
 		++dist;
 	return dist;
 };
+
+
 
 
 }; //NSP ft
