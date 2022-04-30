@@ -1,21 +1,19 @@
 CC=clang++
 C_FLAGS=-Wall -Wextra -Werror -std=c++98
 
-BIN=container_test
+BIN=tree_test
 
 INC=inc/
 
-HFILE=iterator.hpp\
-	vector.hpp\
-	type_traits.hpp\
-	utils.hpp
+HFILE=tree.hpp
 
 
 HDR=$(addprefix $(INC)/, $(HFILE))
 
 SDIR=src
 
-SFILE=main1.cpp
+SFILE=main.cpp\
+	tree.cpp
 
 SRC=$(addprefix $(SDIR)/, $(SFILE))
 
