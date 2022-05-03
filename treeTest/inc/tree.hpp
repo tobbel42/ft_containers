@@ -21,18 +21,34 @@ class rbNode {
 		rbNode(rbNode *parent, rb color, int value);
 };
 
-struct rbDia {
-	rbNode	*child;
-	rbNode	*parent;
-	rbNode	*grandparent;
-	rbNode	*uncle;
-};
+// struct rbDia {
+// 	rbNode	*child;
+// 	rbNode	*parent;
+// 	rbNode	*grandparent;
+// 	rbNode	*uncle;
+// };
 
 class	rbTree{
-	public:
+	private:
 		rbNode	*m_root;
 
-		bool	treeCheck();
+
+		//rotates the node with his parent
+		void	rotate(rbNode *node);
+		void	leftRotate(rbNode *grandParent, rbNode *parent, rbNode *child);
+		void	rightRotate(rbNode *grandParent, rbNode *parent, rbNode *child);
+				
+		rbNode	*leftMost(rbNode *node) const;
+		rbNode	*findSuccessor(rbNode *node);
+		rbNode	*getUncle(rbNode *parent);
+		void	toggleColor(rbNode *node);
+
+
+		void	fixInsert(rbNode *newNode);
+		void	fixDelete(rbNode *delNode, bool first);
+		rbNode	*BSTdeletion(rbNode *node);
+
+		void 	print(const std::string& prefix, rbNode *x, bool isLeft) const;
 		bool	treeCheck(rbNode *startNode);
 		bool	treeCheckHelper(rbNode *node, int blackHeight, int currentHeight);
 
@@ -43,24 +59,21 @@ class	rbTree{
 		rbTree	&operator=(const rbTree & rhs);
 
 		rbNode	*getRoot() const;
-
-		void	insertValue(int val);
-		void	printTree() const;
-
-
-		rbNode	*leftMost(rbNode *node) const;
+		rbNode	*findValue(int value);
 		rbNode	*next(rbNode *node) const;
 
+		void	insertValue(int val);
+		void	deleteValue(int value);
+		void	printTree() const;
+		bool	treeCheck();
 
 
-		//rotates the node with his parent
-		void	rotate(rbNode *node);
 
-	private:
-		void print(const std::string& prefix, rbNode *x, bool isLeft) const;
 
-		void	leftRotate(rbNode *grandParent, rbNode *parent, rbNode *child);
-		void	rightRotate(rbNode *grandParent, rbNode *parent, rbNode *child);
+
+
+
+
 
 };
 

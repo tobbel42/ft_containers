@@ -1,4 +1,5 @@
 #include "tree.hpp"
+#include "../../inc/utils.hpp"
 
 rbTree::rbTree(): m_root(0) {};
 rbTree::~rbTree() {};
@@ -16,6 +17,20 @@ rbTree &rbTree::operator=(const rbTree & rhs) {
 	return *this;
 };
 
+rbNode *rbTree::findValue(int value) {
+	rbNode	*node = m_root;
+	while (node)
+	{
+		if (node->value == value)
+			return node;
+		else if (node->value > value)
+			node = node->left;
+		else
+			node = node->right;
+	}
+	return NULL;
+}
+
 void rbTree::insertValue(int value) {
 	//1.Rule
 	if (!m_root)
@@ -24,8 +39,9 @@ void rbTree::insertValue(int value) {
 		return ;
 	}
 
-	//finding and inserting the value
+	//2.Rule
 	rbNode * newNode = new rbNode(NULL, RED, value);
+	//finding and inserting the value
 	for (rbNode *node = m_root;;)
 	{
 		if (value > node->value)
@@ -51,11 +67,65 @@ void rbTree::insertValue(int value) {
 			}
 		}
 	}
-
-	//2.Rule
+	//3.Rule
 	if (newNode->parent->color == BLACK)
 		return ;
+	
+	//4.Rule
+	fixInsert(newNode);
+
 };
+
+void	rbTree::fixInsert(rbNode *newNode) {
+	rbNode	*parent = newNode->parent;
+	rbNode	*grandparent = parent->parent;
+	rbNode	*uncle = getUncle(parent);
+
+	if (uncle && uncle->color == RED) {
+		toggleColor(uncle);
+		toggleColor(parent);
+		if (parent->parent != m_root)
+		{
+			toggleColor(parent->parent);
+			if (!treeCheck(parent->parent->parent))
+				fixInsert(parent->parent);
+		}
+	}
+	else
+	{
+		if (!((newNode == parent->left && parent == grandparent->left) ||
+			(newNode == parent->right && parent == grandparent->right)))
+		{
+			rotate(newNode);
+			rotate(newNode);
+			toggleColor(newNode);
+			toggleColor(grandparent);
+		}
+		else
+		{
+			rotate(newNode->parent);
+			toggleColor(parent);
+			toggleColor(grandparent);
+		}
+	}
+};
+
+
+void	rbTree::toggleColor(rbNode *node) {
+	if (node)
+	{
+		if (node->color == RED)
+			node->color = BLACK;
+		else
+			node->color = RED;
+	}
+};
+
+rbNode	*rbTree::getUncle(rbNode *parent) {
+	if (parent->parent->left == parent)
+		return parent->parent->right;
+	return parent->parent->left;
+}
 
 void rbTree::printTree() const {
 	print("", m_root, false);
@@ -123,6 +193,8 @@ bool	rbTree::treeCheck(rbNode *startNode) {
 };
 
 bool	rbTree::treeCheckHelper(rbNode *node, int blackHeight, int currentHeight){
+	if (!node)
+		return true;
 	if (node->color == BLACK)
 		++currentHeight;
 
@@ -225,3 +297,146 @@ void	rbTree::rotate(rbNode *node)
 			leftRotate(node->parent->parent, node->parent, node);
 	}
 };
+
+void rbTree::deleteValue(int value) {
+	rbNode *node = findValue(value);
+
+	if (!node)
+		return ;
+
+	node = BSTdeletion(node);
+
+	//Case 1
+	if (node->color == RED)
+	{
+		if (node == node->parent->left)
+			node->parent->left = NULL;
+		else
+			node->parent->right = NULL;
+		//allocator destroy;
+		delete node;
+	}
+	else
+		fixDelete(node, true);
+
+};
+
+rbNode *rbTree::findSuccessor(rbNode *node) {
+	rbNode *successor = node->right;
+	while (successor->left)
+		successor = successor->left;
+	return successor;
+};
+
+
+rbNode	*rbTree::BSTdeletion(rbNode *node) {
+
+	rbNode *next;
+
+	while (node->left || node->right)
+	{
+		if (node->left && node->right)
+			next = findSuccessor(node);
+		else if (node->left)
+			next = node->left;
+		else
+			next = node->right;
+		//ToDo, allocator.construct ++ allocator destroy
+		node->value = next->value;
+		node = next;
+	}
+	return node;
+};
+
+void	rbTree::fixDelete(rbNode *delNode, bool first) {
+	//case 2
+	if (delNode == m_root)
+	{
+		//allcator.destroy
+		if (first)
+		{
+			delete delNode;
+			m_root = NULL;
+		}
+		return ;
+	}
+
+
+	rbNode *parent = delNode->parent;
+	rbNode *sibling;
+	rbNode *farChild;
+	rbNode *nearChild;
+	if (parent->left == delNode)
+	{
+		sibling = parent->right;
+		nearChild = sibling->left;
+		farChild = sibling->right;
+	}
+	else
+	{
+		sibling = parent->left;
+		nearChild = sibling->right;
+		farChild = sibling->left;
+	}
+
+	//case 4
+	if (sibling && sibling->color == RED)
+	{
+
+		ft::swap(sibling->color, parent->color);
+		rotate(sibling);
+		fixDelete(delNode, first);
+	}
+	else
+	{
+		//case 3
+		if ((!sibling->left || sibling->left->color == BLACK) &&
+			(!sibling->right || sibling->right->color == BLACK))
+		{
+
+			if (first)
+			{
+				if (parent->left == delNode)
+					parent->left = NULL;
+				else
+					parent->right = NULL;
+				delete delNode;
+				first = false;
+			}
+			sibling->color = RED;
+			if (parent->color == RED)
+			{
+				parent->color = BLACK;
+				return ;
+			}
+			fixDelete(parent, false);
+		}
+		//Case 5
+		else
+		{
+			if (nearChild && nearChild->color == RED)
+			{
+
+				ft::swap(sibling->color, nearChild->color);
+				rotate(nearChild);
+
+				rbNode *tmp = sibling;
+				sibling = nearChild;
+				farChild = tmp;
+			}
+
+			ft::swap(parent->color, sibling->color);
+			rotate(sibling);
+			if (first)
+			{
+				if (parent->left == delNode)
+					parent->left = NULL;
+				else
+					parent->right = NULL;
+				delete delNode;
+				first = false;
+			}
+			farChild->color = BLACK;
+		}
+	}
+}
