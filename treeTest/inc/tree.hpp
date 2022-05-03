@@ -21,17 +21,9 @@ class rbNode {
 		rbNode(rbNode *parent, rb color, int value);
 };
 
-// struct rbDia {
-// 	rbNode	*child;
-// 	rbNode	*parent;
-// 	rbNode	*grandparent;
-// 	rbNode	*uncle;
-// };
-
 class	rbTree{
 	private:
 		rbNode	*m_root;
-
 
 		//rotates the node with his parent
 		void	rotate(rbNode *node);
@@ -45,7 +37,8 @@ class	rbTree{
 
 
 		void	fixInsert(rbNode *newNode);
-		void	fixDelete(rbNode *delNode, bool first);
+		void	fixDelete(rbNode *delNode);
+		void	nodeDelete(rbNode *delNode);
 		rbNode	*BSTdeletion(rbNode *node);
 
 		void 	print(const std::string& prefix, rbNode *x, bool isLeft) const;
@@ -62,18 +55,9 @@ class	rbTree{
 		rbNode	*findValue(int value);
 		rbNode	*next(rbNode *node) const;
 
-		void	insertValue(int val);
+		void	insertValue(int value);
 		void	deleteValue(int value);
 		void	printTree() const;
 		bool	treeCheck();
-
-
-
-
-
-
-
-
-
 };
 
