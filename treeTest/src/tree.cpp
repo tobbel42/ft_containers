@@ -37,7 +37,6 @@ rbTree &rbTree::operator=(const rbTree & rhs) {
 	{
 		insertValue(node->value);
 		node = rhs.next(node);
-		std::cout << "hi" << std::endl;
 	}
 	return *this;
 };

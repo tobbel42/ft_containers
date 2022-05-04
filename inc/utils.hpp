@@ -19,6 +19,11 @@ namespace ft{
 		return b;
 	};
 
+	template <class T>
+	struct less : std::binary_function <T,T,bool> {
+  		bool operator() (const T& x, const T& y) const {return x<y;}
+	};
+
 	//redo
 	template <class InputIterator1, class InputIterator2>
 	bool equal ( InputIterator1 first1, InputIterator1 last1, InputIterator2 first2 ) {
