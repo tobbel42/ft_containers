@@ -71,6 +71,28 @@ namespace ft
 				}
 			}	
 		};
+
+		void prev() {
+			if (m_ptr)
+			{
+				if (m_ptr->left)
+				{
+					m_ptr = m_ptr->left;
+					while (m_ptr->right)
+						m_ptr = m_ptr->right;
+				}
+				else if (!m_ptr->parent)
+					m_ptr = NULL;
+				else if (m_ptr == m_ptr->parent->right)
+					m_ptr = m_ptr->parent;
+				else if (m_ptr == m_ptr->parent->left)
+				{
+					while (m_ptr->parent && m_ptr != m_ptr->parent->right)
+						m_ptr = m_ptr->parent;
+					m_ptr = m_ptr->parent;
+				}
+			}	
+		};
 	};
 
 	enum rb {RED, BLACK};
@@ -228,7 +250,7 @@ namespace ft
 
 			node_type	*BSTdeletion(node_type *node) {
 			
-				rbNode *next;
+				node_type *next;
 
 				while (node->left || node->right)
 				{
@@ -239,7 +261,8 @@ namespace ft
 					else
 						next = node->right;
 					//ToDo, allocator.construct ++ allocator destroy
-					node->value = next->value;
+					m_value_allocator.destroy(&node->m_value);
+					m_value_allocator.construct(&node->m_value, next->m_value);
 					node = next;
 				}
 				return node;
@@ -340,7 +363,7 @@ namespace ft
 			};
 
 			size_t	deleteValue(const value_type & value) {
-					node_type *node = findValue(value);
+					node_type *node = findValue(value).base();
 					if (!node)
 						return 0;
 
@@ -351,6 +374,7 @@ namespace ft
 						nodeDelete(node);
 					else
 						fixDelete(node);
+					return 1;
 			};
 
 
@@ -361,7 +385,25 @@ namespace ft
 				return iterator(node);
 			};
 
+			bool	treeCheck(node_type *startNode) {
+				int blackHeight = 0;
+				for (node_type *node = startNode; node; node = node->left)
+				{
+					if (node->color == BLACK)
+						++blackHeight;
+				}
+				return treeCheckHelper(startNode, blackHeight, 0);
+			};
+
 		private:
+
+			node_type *findSuccessor(node_type *node) {
+				node_type *successor = node->right;
+				while (successor->left)
+					successor = successor->left;
+				return successor;
+			};
+
 			node_type *getUncle(node_type *node) {
 				if (node->parent)
 				{
@@ -382,15 +424,6 @@ namespace ft
 				}
 			};
 
-			bool	treeCheck(node_type *startNode) {
-				int blackHeight = 0;
-				for (node_type *node = startNode; node; node = node->left)
-				{
-					if (node->color == BLACK)
-						++blackHeight;
-				}
-				return treeCheckHelper(startNode, blackHeight, 0);
-			};
 
 			bool	treeCheckHelper(node_type *node, int blackHeight, int currentHeight){
 				if (!node)
