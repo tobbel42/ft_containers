@@ -1,6 +1,6 @@
 CC=clang++
-C_FLAGS=-Wall -Wextra -Werror -std=c++98 -g -fsanitize=address
-
+C_FLAGS=-Wall -Wextra -Werror -std=c++98 
+S_FLAGS=-g -fsanitize=address
 BIN=container_test
 
 INC=inc/
@@ -15,7 +15,7 @@ HDR=$(addprefix $(INC)/, $(HFILE))
 
 SDIR=src
 
-SFILE=main2.cpp
+SFILE=main3.cpp
 
 SRC=$(addprefix $(SDIR)/, $(SFILE))
 

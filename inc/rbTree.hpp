@@ -26,7 +26,7 @@ namespace ft
 			typedef typename iterator_traits<iterator_type>::iterator_category
 				iterator_category;
 		
-		private:
+		protected:
 		
 		pointer	m_ptr;
 		
@@ -102,16 +102,23 @@ namespace ft
 		public: // TODO fix
 			typedef T		value_type;
 
-			rbNode	*left;
-			rbNode	*right;
-			rbNode	*parent;
-			rb		color;
-			T		m_value;
+			rbNode		*left;
+			rbNode		*right;
+			rbNode		*parent;
+			rb			color;
+			value_type	m_value;
+	
 			rbNode():
 				left(NULL),
 				right(NULL),
 				parent(NULL),
 				color(RED) {};
+			rbNode(const value_type & value):
+				left(NULL),
+				right(NULL),
+				parent(NULL),
+				color(RED),
+				m_value(value) {};
 			~rbNode() {
 				if (parent)
 				{
@@ -124,14 +131,14 @@ namespace ft
 	};
 
 
-	template< class T, class K, class Compare = ft::less<K>,
+	template< class T, class Compare = ft::less<T>,
 		class valueAlloc = std::allocator<T>,
 		class nodeAlloc = std::allocator< ft::rbNode<T> > >
 	class rbTree {
 		public:
 
 		typedef T											value_type;
-		typedef K											key_type;
+		//typedef K											key_type;
 		typedef valueAlloc									value_allocator_type;
 		typedef nodeAlloc									node_allocator_type;
 		typedef Compare										compare_type;
@@ -163,7 +170,7 @@ namespace ft
 				m_less(compare),
 				m_value_allocator(v),
 				m_node_allocator(n) {};
-			~rbTree() {/*TODO*/};
+			~rbTree() { clearTree(); };
 			rbTree(const rbTree & cpy) { *this = cpy; };
 			rbTree	&operator=(const rbTree & rhs) {
 				m_root = NULL;
@@ -176,6 +183,40 @@ namespace ft
 				return *this;
 			};
 
+			size_t	deleteValue(const value_type & value) {
+					node_type *node = findValue(value).base();
+					if (!node)
+						return 0;
+
+					node = BSTdeletion(node);
+
+					//Case 1
+					if (node->color == RED)
+						nodeDelete(node);
+					else
+						fixDelete(node);
+					return 1;
+			};
+
+
+			iterator	begin() const {
+				if (!m_root)
+					return iterator(NULL);
+				node_type *node = m_root;
+				while (node->left)
+					node = node->left;
+				return iterator(node);
+			};
+
+			bool	treeCheck(node_type *startNode) {
+				int blackHeight = 0;
+				for (node_type *node = startNode; node; node = node->left)
+				{
+					if (node->color == BLACK)
+						++blackHeight;
+				}
+				return treeCheckHelper(startNode, blackHeight, 0);
+			};
 			iterator getRoot() const { return iterator(m_root);};
 			iterator findValue(const value_type & value) {
 				node_type	*node = m_root;
@@ -192,12 +233,6 @@ namespace ft
 				return iterator(NULL);
 			};
 
-			node_type	*createNode(const value_type & value) {
-				node_type	*newNode = m_node_allocator.allocate(1);
-				m_node_allocator.construct(newNode, node_type());
-				m_value_allocator.construct(&newNode->m_value, value);
-				return newNode;
-			}
 
 			//inserts the value in the tree
 			iterator	insertValue(const value_type &value) {
@@ -248,6 +283,35 @@ namespace ft
 				return iterator(newNode);
 			};
 
+			void printTree() const {
+				print("", m_root, false);
+			};
+
+			void clearTree() {
+				if (m_root)
+				{
+					clearTreeHelper(m_root);
+					m_root = NULL;
+				}
+			};
+
+
+		private:
+
+			void clearTreeHelper(node_type * node) {
+				if (node->left)
+					clearTreeHelper(node->left);
+				if (node->right)
+					clearTreeHelper(node->right);
+				nodeDelete(node);
+			}
+
+			node_type	*createNode(const value_type & value) {
+				node_type	*newNode = m_node_allocator.allocate(1);
+				m_node_allocator.construct(newNode, node_type(value));
+				m_value_allocator.construct(&newNode->m_value, value);
+				return newNode;
+			}
 			node_type	*BSTdeletion(node_type *node) {
 			
 				node_type *next;
@@ -260,7 +324,6 @@ namespace ft
 						next = node->left;
 					else
 						next = node->right;
-					//ToDo, allocator.construct ++ allocator destroy
 					m_value_allocator.destroy(&node->m_value);
 					m_value_allocator.construct(&node->m_value, next->m_value);
 					node = next;
@@ -361,41 +424,6 @@ namespace ft
 					}
 				}
 			};
-
-			size_t	deleteValue(const value_type & value) {
-					node_type *node = findValue(value).base();
-					if (!node)
-						return 0;
-
-					node = BSTdeletion(node);
-
-					//Case 1
-					if (node->color == RED)
-						nodeDelete(node);
-					else
-						fixDelete(node);
-					return 1;
-			};
-
-
-			iterator	begin() const {
-				node_type *node = m_root;
-				while (node->left)
-					node = node->left;
-				return iterator(node);
-			};
-
-			bool	treeCheck(node_type *startNode) {
-				int blackHeight = 0;
-				for (node_type *node = startNode; node; node = node->left)
-				{
-					if (node->color == BLACK)
-						++blackHeight;
-				}
-				return treeCheckHelper(startNode, blackHeight, 0);
-			};
-
-		private:
 
 			node_type *findSuccessor(node_type *node) {
 				node_type *successor = node->right;
@@ -540,11 +568,6 @@ namespace ft
 				}
 			};
 
-		public:
-			void printTree() const {
-				print("", m_root, false);
-			};
-
 			void print(const std::string & prefix, node_type *node, bool isLeft) const
 			{
 				if (node)
@@ -558,30 +581,6 @@ namespace ft
 					print(prefix + (isLeft ? "│   " : "    "), node->right, false);
 				}
 			}
-			// node_type	*leftMost(node_type *node) const {
-			// 	if (node)
-			// 	{
-			// 		while (node->left)
-			// 			node = node->left;
-			// 	}
-			// 	return node;
-			// };
-		// 	void	rotate(rbNode *node);
-		// 	void	leftRotate(rbNode *grandParent, rbNode *parent, rbNode *child);
-		// 	void	rightRotate(rbNode *grandParent, rbNode *parent, rbNode *child);
-					
-		// 	rbNode	*findSuccessor(rbNode *node);
-		// 	rbNode	*getUncle(rbNode *parent);
-		// 	void	toggleColor(rbNode *node);
-	
-	
-		// 	void	fixDelete(rbNode *delNode);
-		// 	void	nodeDelete(rbNode *delNode);
-		// 	rbNode	*BSTdeletion(rbNode *node);
-	
-		// 	void 	print(const std::string& prefix, rbNode *x, bool isLeft) const;
-		// 	bool	treeCheck(rbNode *startNode);
-		// 	bool	treeCheckHelper(rbNode *node, int blackHeight, int currentHeight);
 	};	
 
 }; // namespace ft

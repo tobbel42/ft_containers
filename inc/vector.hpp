@@ -97,8 +97,9 @@ namespace ft
 			typedef class ft::reverse_iterator<iterator>		reverse_iterator;
 			typedef class ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
-			typedef std::size_t						size_type;
-			typedef std::ptrdiff_t					difference_type;
+			typedef	typename allocator_type::size_type		size_type;
+			typedef typename allocator_type::size_type		difference_type;
+
 
 			explicit vector(const allocator_type & alloc = allocator_type()):
 				start(NULL),
