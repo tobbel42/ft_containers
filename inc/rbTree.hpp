@@ -131,14 +131,14 @@ namespace ft
 	};
 
 
-	template< class T, class Compare = ft::less<T>,
+	template< class T, class Key, class Compare = ft::less<T>,
 		class valueAlloc = std::allocator<T>,
 		class nodeAlloc = std::allocator< ft::rbNode<T> > >
 	class rbTree {
 		public:
 
 		typedef T											value_type;
-		//typedef K											key_type;
+		typedef Key											key_type;
 		typedef valueAlloc									value_allocator_type;
 		typedef nodeAlloc									node_allocator_type;
 		typedef Compare										compare_type;
@@ -183,8 +183,8 @@ namespace ft
 				return *this;
 			};
 
-			size_t	deleteValue(const value_type & value) {
-					node_type *node = findValue(value).base();
+			size_t	deleteValue(const key_type & key) {
+					node_type *node = findValue(key).base();
 					if (!node)
 						return 0;
 
@@ -218,14 +218,14 @@ namespace ft
 				return treeCheckHelper(startNode, blackHeight, 0);
 			};
 			iterator getRoot() const { return iterator(m_root);};
-			iterator findValue(const value_type & value) {
+			iterator findValue(const key_type & key) {
 				node_type	*node = m_root;
 
 				while (node)
 				{
-					if (m_less(node->m_value, value))
+					if (m_less(node->m_value, key))
 						node = node->right;
-					else if (m_less(value, node->m_value))
+					else if (m_less(key, node->m_value))
 						node = node->left;
 					else
 						return iterator(node);
@@ -235,8 +235,8 @@ namespace ft
 
 
 			//inserts the value in the tree
-			iterator	insertValue(const value_type &value) {
-				iterator	iter = findValue(value);
+			iterator	insertValue(const value_type &value, const key_type &key) {
+				iterator	iter = findValue(key);
 				if (iter.base())
 					return iter;
 				

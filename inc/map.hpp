@@ -10,18 +10,19 @@
 
 namespace ft {
 
-	template <class T>
-	class map_iterator: public rbTree_iterator<T>
+	template <class T, class node = ft::rbNode<T> >
+	class map_iterator: public rbTree_iterator<node>
 	{
 		public:
 			typedef T					value_type;
-			map_iterator(const rbTree_iterator<value_type> & iter) {
+			typedef	node				node_type;
+			map_iterator(const rbTree_iterator<node_type> & iter) {
 				m_ptr = iter.base();
 			};
 
-			value_type	&operator*() { return *m_ptr; }
+			value_type	&operator*() const { return m_ptr->m_value; }
 		private:
-			value_type	*m_ptr;
+			node_type	*m_ptr;
 	};
 
 	template <class Key, class T, class Compare = ft::less<Key>,
@@ -41,15 +42,29 @@ namespace ft {
 			typedef typename allocator_type::size_type			size_type;
 			typedef	typename allocator_type::difference_type	difference_type;
 
+			struct map_less : std::binary_function <value_type, value_type, bool> {
+				bool operator() (const value_type& x, const value_type& y) const {
+					Compare f;
+					return f(x.first, y.first);
+				};
+				bool operator() (const value_type& x, const key_type& y) const {
+					Compare f;
+					return f(x.first, y);
+				};
+				bool operator() (const key_type& x, const value_type& y) const {
+					Compare f;
+					return f(x, y.first);
+				};
+			};
 			
-			typedef typename ft::rbTree<value_type>::node_type
-				node_type;
-			typedef typename ft::rbTree<value_type>
+			typedef typename ft::rbTree<value_type, key_type, map_less>
 				tree_type;
+			typedef typename tree_type::node_type
+				node_type;
 
-			typedef	ft::map_iterator<node_type>					
+			typedef	ft::map_iterator<value_type>		
 				iterator;
-			typedef ft::map_iterator<const node_type>
+			typedef ft::map_iterator<const value_type>
 				const_iterator;
 			typedef class ft::reverse_iterator<iterator>
 				reverse_iterator;
@@ -60,6 +75,8 @@ namespace ft {
 
 			tree_type	m_tree;
 
+			
+
 		public:
 			map() {};
 			~map() {};
@@ -67,9 +84,16 @@ namespace ft {
 			iterator	begin() const { return iterator(m_tree.begin()); };
 
 			iterator	insert(const value_type & value) {
-				return m_tree.insertValue(value);
-			}
+				return m_tree.insertValue(value, value.first);
+			};
 
+			size_t		erase(const key_type & key) {
+				return m_tree.deleteValue(key);
+			};
+
+			iterator	findValue(const key_type & key) {
+				return m_tree.findValue(key);
+			};
 
 			void	printTree() { m_tree.printTree(); };
 
