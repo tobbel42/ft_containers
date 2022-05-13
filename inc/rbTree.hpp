@@ -34,21 +34,20 @@ namespace ft
 
 		rbTree_iterator() : m_ptr(NULL) {};
 		rbTree_iterator(pointer ptr) : m_ptr(ptr) {};
-		rbTree_iterator(const rbTree_iterator& cpy) {*this = cpy; };
-
-		// template<typename U>
-		// rbTree_iterator(const rbTree_iterator<T2>& cpy,
-		// 	typename enable_if<std::is_constructible<T, U>::value, T2>::type*
-		// 		= NULL) : m_ptr(cpy.base()) {};
-
+		rbTree_iterator(const rbTree_iterator& cpy) { *this = cpy; };
 		~rbTree_iterator() {};
-		pointer	base() const {return m_ptr;};
+
+
+		pointer	base() const { return m_ptr; };
 
 		rbTree_iterator&	operator=(const rbTree_iterator & rhs) {
 			m_ptr = rhs.base();
 			return *this;
 		};
-		reference	operator*() const {return m_ptr->value;};
+
+		reference	operator*() const { return m_ptr->value; };
+		pointer		operator->() const { return &m_ptr->value; };
+
 
 		void next() {
 			if (m_ptr)
@@ -95,18 +94,19 @@ namespace ft
 		};
 	};
 
-	enum rb {RED, BLACK};
+	enum eRB {RED, BLACK};
 
 	template<class T >
 	class rbNode {
 		public: // TODO fix
-			typedef T		value_type;
-
-			rbNode		*left;
-			rbNode		*right;
-			rbNode		*parent;
-			rb			color;
-			value_type	m_value;
+			typedef T			value_type;
+			typedef	rbNode*		node_pointer;
+			typedef eRB			color_type;
+			node_pointer		left;
+			node_pointer		right;
+			node_pointer		parent;
+			color_type			color;
+			value_type			m_value;
 	
 			rbNode():
 				left(NULL),
@@ -128,17 +128,25 @@ namespace ft
 						parent->right = NULL;
 				}
 			};
+			rbNode	&operator=(const rbNode & rhs)
+			{
+				left = rhs.left;
+				right = rhs.right;
+				parent = rhs.parent;
+				color = rhs.color;
+				m_value = rhs.m_value;
+			};
 	};
 
 
-	template< class T, class Key, class Compare = ft::less<T>,
+	template< class T, class Compare = ft::less<T>,
 		class valueAlloc = std::allocator<T>,
 		class nodeAlloc = std::allocator< ft::rbNode<T> > >
 	class rbTree {
 		public:
 
 		typedef T											value_type;
-		typedef Key											key_type;
+		//typedef Key											key_type;
 		typedef valueAlloc									value_allocator_type;
 		typedef nodeAlloc									node_allocator_type;
 		typedef Compare										compare_type;
@@ -155,25 +163,31 @@ namespace ft
 
 		typedef class ft::reverse_iterator<iterator>	   reverse_iterator;
 		typedef class ft::reverse_iterator<const_iterator> const_reverse_iterator;
+
+		typedef	typename nodeAlloc::size_type				size_type;
+		typedef	typename nodeAlloc::difference_type			difference_type;
+
 		private:
 
-			node_type	*m_root;
-			Compare		m_less;
-			valueAlloc	m_value_allocator;
-			nodeAlloc	m_node_allocator;
+			node_type		*m_root;
+			compare_type	m_comp;
+			valueAlloc		m_value_allocator;
+			nodeAlloc		m_node_allocator;
+			size_type		m_size;
 
 		public:
 			rbTree(const compare_type & compare = compare_type(),
 				const value_allocator_type & v = value_allocator_type(),
 				const node_allocator_type & n = node_allocator_type()):
 				m_root(NULL),
-				m_less(compare),
+				m_comp(compare),
 				m_value_allocator(v),
-				m_node_allocator(n) {};
+				m_node_allocator(n),
+				m_size(0) {};
 			~rbTree() { clearTree(); };
 			rbTree(const rbTree & cpy) { *this = cpy; };
 			rbTree	&operator=(const rbTree & rhs) {
-				m_root = NULL;
+				clearTree();
 				node_type *node = leftMost(rhs.getRoot());
 				while (node)
 				{
@@ -183,7 +197,11 @@ namespace ft
 				return *this;
 			};
 
-			size_t	deleteValue(const key_type & key) {
+			size_type	size() const { return m_size; };
+			size_type	max_size() const { return m_node_allocator.max_size(); };
+
+			template <class _Key>
+			size_type	deleteValue(const _Key & key) {
 					node_type *node = findValue(key).base();
 					if (!node)
 						return 0;
@@ -195,9 +213,9 @@ namespace ft
 						nodeDelete(node);
 					else
 						fixDelete(node);
+					--m_size;
 					return 1;
 			};
-
 
 			iterator	begin() const {
 				if (!m_root)
@@ -207,6 +225,7 @@ namespace ft
 					node = node->left;
 				return iterator(node);
 			};
+			iterator	end() const { return iterator(NULL); };
 
 			bool	treeCheck(node_type *startNode) {
 				int blackHeight = 0;
@@ -218,14 +237,15 @@ namespace ft
 				return treeCheckHelper(startNode, blackHeight, 0);
 			};
 			iterator getRoot() const { return iterator(m_root);};
-			iterator findValue(const key_type & key) {
+			template<class _Key>
+			iterator findValue(const _Key & key) {
 				node_type	*node = m_root;
 
 				while (node)
 				{
-					if (m_less(node->m_value, key))
+					if (m_comp(node->m_value, key))
 						node = node->right;
-					else if (m_less(key, node->m_value))
+					else if (m_comp(key, node->m_value))
 						node = node->left;
 					else
 						return iterator(node);
@@ -235,24 +255,26 @@ namespace ft
 
 
 			//inserts the value in the tree
-			iterator	insertValue(const value_type &value, const key_type &key) {
+			template<class _Key>
+			ft::pair<iterator, bool>	insertValue(const value_type &value, const _Key &key) {
 				iterator	iter = findValue(key);
 				if (iter.base())
-					return iter;
+					return ft::make_pair(iter, false);
 				
 				//2.Rule
 				if (!m_root)
 				{
 					m_root = createNode(value);
 					m_root->color = BLACK;
-					return getRoot();
+					++m_size;
+					return ft::make_pair(getRoot(), true);
 				}
 
 				node_type	*newNode = createNode(value);
 				//inserting the value
 				for (node_type *node = m_root;;)
 				{
-					if (m_less(value, node->m_value))
+					if (m_comp(value, node->m_value))
 					{
 						if (node->left)
 							node = node->left;
@@ -275,12 +297,13 @@ namespace ft
 						}
 					}
 				}
+				++m_size;
 
 				//3.Rule
 				if (newNode->parent->color != BLACK)
 					fixInsert(newNode);
 
-				return iterator(newNode);
+				return ft::make_pair(iterator(newNode), true);
 			};
 
 			void printTree() const {
@@ -293,6 +316,7 @@ namespace ft
 					clearTreeHelper(m_root);
 					m_root = NULL;
 				}
+				m_size = 0;
 			};
 
 

@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include <map>
+
 #include "iterator.hpp"
 #include "rbTree.hpp"
 #include "utils.hpp"
@@ -10,20 +12,83 @@
 
 namespace ft {
 
-	template <class T, class node = ft::rbNode<T> >
-	class map_iterator: public rbTree_iterator<node>
+	template <class T>
+	class map_iterator: public rbTree_iterator<ft::rbNode<T> >
 	{
 		public:
 			typedef T					value_type;
-			typedef	node				node_type;
-			map_iterator(const rbTree_iterator<node_type> & iter) {
-				m_ptr = iter.base();
+			typedef	ft::rbNode<T>		node_type;
+			map_iterator() {};
+			map_iterator(const typename rbTree_iterator<node_type>::pointer ptr):
+				rbTree_iterator<node_type>(ptr) {};
+			map_iterator(const rbTree_iterator<node_type> & iter):
+				rbTree_iterator<node_type>(iter) {};
+			map_iterator(const map_iterator<value_type> & cpy):
+				rbTree_iterator<node_type>(cpy.base()) {};
+			
+	
+	
+			map_iterator & operator=(const map_iterator<value_type> & rhs) {
+				rbTree_iterator<node_type>::m_ptr = rhs.base();
+				return *this;
 			};
 
-			value_type	&operator*() const { return m_ptr->m_value; }
-		private:
-			node_type	*m_ptr;
+			map_iterator & operator++() { this->next(); return *this; } ;
+
+			value_type	&operator*() const { return rbTree_iterator<node_type>::m_ptr->m_value; }
+			value_type	*operator->() const { return &(rbTree_iterator<node_type>::m_ptr->m_value);}
+
 	};
+
+	template <typename T, typename U>
+	bool operator==(const map_iterator<T> & lhs, const map_iterator<U> & rhs) {
+		return lhs.base() == rhs.base();
+	};
+
+	template <typename T, typename U>
+	bool operator!=(const map_iterator<T> & lhs, const map_iterator<U> & rhs) {
+		return lhs.base() != rhs.base();
+	};
+
+
+	template <class T >
+	class const_map_iterator: public rbTree_iterator<ft::rbNode<const T> >
+	{
+		public:
+			typedef const T				value_type;
+			typedef	ft::rbNode<value_type>	node_type;
+			// const_map_iterator(const typename rbTree_iterator<node_type>::pointer ptr):
+			// 	rbTree_iterator<node_type>(ptr) {};
+			// const_map_iterator(const rbTree_iterator<node_type> & iter):
+			// 	rbTree_iterator<node_type>(iter) {};
+			const_map_iterator() {};
+			const_map_iterator(const map_iterator<T>& cpy):
+				rbTree_iterator<node_type>((node_type *)((void *)cpy.base())) {};
+	
+			value_type	&operator*() const { return rbTree_iterator<node_type>::m_ptr->m_value; }
+			value_type	*operator->() const { return &(rbTree_iterator<node_type>::m_ptr->m_value);}
+
+			const_map_iterator & operator=(const const_map_iterator<T> & rhs) {
+				rbTree_iterator<node_type>::m_ptr = rhs.base();
+				return *this;
+			};
+
+			const_map_iterator &	operator++() {this->next(); return *this; };
+
+
+	};
+
+	template <typename T, typename U>
+	bool operator==(const_map_iterator<T> & lhs, const_map_iterator<U> & rhs) {
+		return lhs.base() == rhs.base();
+	};
+
+	template <typename T, typename U>
+	bool operator!=(const_map_iterator<T> & lhs, const_map_iterator<U> & rhs) {
+		return lhs.base() != rhs.base();
+	};
+
+
 
 	template <class Key, class T, class Compare = ft::less<Key>,
 		class Alloc = std::allocator<ft::pair<const Key, T> > >
@@ -42,6 +107,7 @@ namespace ft {
 			typedef typename allocator_type::size_type			size_type;
 			typedef	typename allocator_type::difference_type	difference_type;
 
+	// todo Give this constructor
 			struct map_less : std::binary_function <value_type, value_type, bool> {
 				bool operator() (const value_type& x, const value_type& y) const {
 					Compare f;
@@ -57,14 +123,16 @@ namespace ft {
 				};
 			};
 			
-			typedef typename ft::rbTree<value_type, key_type, map_less>
+			
+
+			typedef typename ft::rbTree<value_type, map_less>
 				tree_type;
 			typedef typename tree_type::node_type
 				node_type;
 
 			typedef	ft::map_iterator<value_type>		
 				iterator;
-			typedef ft::map_iterator<const value_type>
+			typedef ft::const_map_iterator<value_type>
 				const_iterator;
 			typedef class ft::reverse_iterator<iterator>
 				reverse_iterator;
@@ -73,17 +141,53 @@ namespace ft {
 
 		private:
 
-			tree_type	m_tree;
+			tree_type			m_tree;
+			allocator_type		m_allocator;
+			key_compare			m_compare;
 
 			
 
 		public:
-			map() {};
+
+		/*constructors--------------------------------------------------------*/
+		explicit map(const key_compare& comp = key_compare(),
+					const allocator_type& alloc = allocator_type()):
+			m_allocator(alloc),
+			m_compare(comp) {};
+		template <class InputIterator>
+		map (InputIterator first, InputIterator last,
+			const key_compare& comp = key_compare(),
+			const allocator_type & alloc = allocator_type()):
+			m_allocator(alloc),
+			m_compare(comp) {
+				for (; first != last; ++first)
+					m_tree.insertValue(*first, first->first);
+		};
+		map (const map & x):
+			m_allocator(x.get_allocator()),
+			m_compare(x.key_comp()) { *this = x; };
+
+		map & operator=(const map & rhs){
+			m_tree.clearTree();
+			for (iterator iter = rhs.begin(); iter != rhs.end(); ++iter)
+				m_tree.insertValue(*iter, iter->first);
+			return *this;
+		}
+
 			~map() {};
 
 			iterator	begin() const { return iterator(m_tree.begin()); };
+			iterator	end() const { return iterator(NULL); };
 
-			iterator	insert(const value_type & value) {
+			size_type	max_size() const { return m_tree.max_size(); };
+			difference_type size() const { return m_tree.size(); };
+
+			iterator insert (iterator position, const value_type& val)
+			{
+				return m_tree.insertValue(val, val.first).first;
+				(void)position;
+			};
+			ft::pair<iterator, bool>	insert(const value_type & value) {
 				return m_tree.insertValue(value, value.first);
 			};
 
@@ -96,6 +200,9 @@ namespace ft {
 			};
 
 			void	printTree() { m_tree.printTree(); };
+
+		allocator_type get_allocator() const { return m_allocator; };
+		key_compare key_comp() const { return m_compare; };
 
 
 	};

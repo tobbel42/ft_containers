@@ -31,12 +31,15 @@ namespace ft
 			vector_iterator(const vector_iterator& cpy) {*this = cpy;};
 
 			//enable to transform const iter to iter and vice versa
-			template<typename T2>
-				vector_iterator(const vector_iterator<T2>& other,
-				typename enable_if<std::is_constructible<T, T2>::value, T2>::type* = nullptr)
-					: m_ptr(other.base()) {};
+			// template<typename T2>
+			// 	vector_iterator(const vector_iterator<T2>& other,
+			// 	typename enable_if<std::is_constructible<T, T2>::value, T2>::type* = nullptr)
+			// 		: m_ptr(other.base()) {};
 
 			~vector_iterator() {};
+
+			operator vector_iterator<const T>() const { return m_ptr; };
+
 
 			vector_iterator&	operator=(const vector_iterator& rhs){m_ptr = rhs.m_ptr; return (*this);};
 			difference_type		operator-(const vector_iterator&rhs) const {return m_ptr - rhs.base();};
