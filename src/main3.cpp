@@ -33,16 +33,30 @@ int main()
 		a.erase(6);
 		a.printTree();
 
-		iter = a.findValue(7);
+		iter = a.find(7);
 
 		std::cout << *iter << std::endl;
 
 		std::cout << "new Map" << std::endl;
 
 		ft::map<int, int> d(c.begin(), c.end());
+		ft::map<int, int> f;
+		f.insert(c.begin(), c.end());
+		f.insert(f.end(), ft::make_pair<int, int>(2414, 12415));
 		d.printTree();
-		d = a;
+		f.printTree();
+		d.swap(f);
 		d.printTree();
+		f.printTree();
+
+		ft::map<int, int>::value_compare comp = d.value_comp();
+
+		std::cout << *d.lower_bound(4) << std::endl;
+
+		std::cout << comp(ft::make_pair(13, 20), ft::make_pair(11, 20)) << std::endl;
+
+		for (ft::map<int, int>::reverse_iterator iter = a.rbegin(); iter != a.rend(); ++iter)
+			std::cout << *iter << std::endl;
 		std::cout << "DONE" << std::endl;
 	}	
 	system("leaks container_test");

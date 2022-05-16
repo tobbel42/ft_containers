@@ -45,9 +45,21 @@ namespace ft
 			return *this;
 		};
 
-		reference	operator*() const { return m_ptr->value; };
-		pointer		operator->() const { return &m_ptr->value; };
+		value_type &operator*() const { return m_ptr->m_value; };
+		value_type *operator->() const { return &m_ptr->m_value; };
 
+		rbTree_iterator & operator++() { next(); return *this; };
+		rbTree_iterator	operator++(int)	{
+			rbTree_iterator tmp;
+			next();
+			return tmp;
+		};
+		rbTree_iterator & operator--() { prev(); return *this; };
+		rbTree_iterator	operator--(int)	{
+			rbTree_iterator tmp;
+			prev();
+			return tmp;
+		};
 
 		void next() {
 			if (m_ptr)
@@ -92,6 +104,18 @@ namespace ft
 				}
 			}	
 		};
+	};
+
+	template <class T1, class T2>
+	bool operator==(const rbTree_iterator<T1> & rhs,
+					const rbTree_iterator<T2> & lhs) {
+	return rhs.base() == lhs.base();				
+	};
+
+	template <class T1, class T2>
+	bool operator!=(const rbTree_iterator<T1> & rhs,
+					const rbTree_iterator<T2> & lhs) {
+	return rhs.base() != lhs.base();				
 	};
 
 	enum eRB {RED, BLACK};
@@ -161,8 +185,8 @@ namespace ft
 		typedef rbTree_iterator<node_type>					iterator;
 		typedef rbTree_iterator<const_node_type>			const_iterator;
 
-		typedef class ft::reverse_iterator<iterator>	   reverse_iterator;
-		typedef class ft::reverse_iterator<const_iterator> const_reverse_iterator;
+		//typedef class reverse_rbTree_iterator<iterator>	   reverse_iterator;
+		//typedef class reverse_rbTree_iterator<const_iterator> const_reverse_iterator;
 
 		typedef	typename nodeAlloc::size_type				size_type;
 		typedef	typename nodeAlloc::difference_type			difference_type;
@@ -200,6 +224,10 @@ namespace ft
 			size_type	size() const { return m_size; };
 			size_type	max_size() const { return m_node_allocator.max_size(); };
 
+			void swap(rbTree & tree) {
+				ft::swap(m_root, tree.m_root);
+				ft::swap(m_size, tree.m_size);
+			}
 			template <class _Key>
 			size_type	deleteValue(const _Key & key) {
 					node_type *node = findValue(key).base();
@@ -216,6 +244,24 @@ namespace ft
 					--m_size;
 					return 1;
 			};
+			void	deleteNode(node_type *node) {
+				node = BSTdeletion(node);
+				//Case 1
+				if (node->color == RED)
+					nodeDelete(node);
+				else
+					fixDelete(node);
+				--m_size;
+			}
+
+			template<class _Key>
+			iterator	lower_bound(const _Key& k) {
+				iterator iter = begin();
+				//std:cout <<
+				while (iter != end() && !m_comp(k, iter.base()->m_value))
+					++iter;
+				return iter;
+			};
 
 			iterator	begin() const {
 				if (!m_root)
@@ -226,6 +272,17 @@ namespace ft
 				return iterator(node);
 			};
 			iterator	end() const { return iterator(NULL); };
+
+			iterator	rbegin() const {
+				if (!m_root)
+					return iterator(NULL);
+				node_type * node = m_root;
+				while(node->right)
+					node = node->right;
+				return node;
+			}
+
+			iterator	rend() const { return iterator(NULL); };
 
 			bool	treeCheck(node_type *startNode) {
 				int blackHeight = 0;
