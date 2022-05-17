@@ -257,10 +257,22 @@ namespace ft
 			template<class _Key>
 			iterator	lower_bound(const _Key& k) {
 				iterator iter = begin();
-				//std:cout <<
-				while (iter != end() && !m_comp(k, iter.base()->m_value))
+				while (iter != end() && m_comp(iter.base()->m_value, k))
 					++iter;
 				return iter;
+			};
+			template<class _Key>
+			iterator	upper_bound(const _Key & k) {
+				iterator iter = begin();
+				while (iter != end() && !m_comp(k, iter.base()->m_value))
+					++iter;
+				return (iter);
+				
+			};
+
+			template<class _Key>
+			ft::pair<iterator, iterator> equal_range (const _Key& k) {
+				return ft::make_pair(lower_bound(k), upper_bound(k));
 			};
 
 			iterator	begin() const {

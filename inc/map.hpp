@@ -203,7 +203,6 @@ template <class MapIterator>
 
 		public:
 
-		/*--------------------------------------------------------------------*/
 		/*constructors--------------------------------------------------------*/
 		explicit map(const key_compare& comp = key_compare(),
 					const allocator_type& alloc = allocator_type()):
@@ -233,7 +232,7 @@ template <class MapIterator>
 
 		/*Iterators-----------------------------------------------------------*/
 		iterator		begin()	{ return m_tree.begin(); };
-		const_iterator	begin() const { return const_iterator(m_tree.begin()); };
+		const_iterator	begin() const { return const_iterator(m_tree.begin());};
 		iterator		end() { return m_tree.end(); };
 		const_iterator	end() const { return const_iterator(m_tree.end()); };
 		reverse_iterator rbegin() { return iterator(m_tree.rbegin()); };
@@ -295,14 +294,32 @@ template <class MapIterator>
 				return 1;
 			return 0;
 		};
-		iterator lower_bound(const key_type& k) {
+		iterator lower_bound(const key_type & k) {
 			return m_tree.lower_bound(k);
 		};
+		const_iterator lower_bound(const key_type & k) const {
+			return const_iterator(m_tree.lower_bound(k));
+		};
+		iterator upper_bound(const key_type & k) {
+			return m_tree.upper_bound(k);
+		};
+		const_iterator upper_bound(const key_type & k) const {
+			return const_iterator(m_tree.upper_bound(k));
+		};
+		ft::pair<iterator, iterator> equal_range(const key_type& k) {
+			return ft::make_pair(m_tree.lower_bound(k), m_tree.upper_bound(k));
+		};
+		ft::pair<const_iterator, const_iterator>
+		equal_range(const key_type & k) const {
+			return ft::make_pair(const_iterator(m_tree.lower_bound(k)),
+								const_iterator(m_tree.upper_bound(k)));
+		};
 
-			void	printTree() { m_tree.printTree(); };
+		/*Utils---------------------------------------------------------------*/
+		void	printTree() { m_tree.printTree(); };
+
 		/*Allocator-----------------------------------------------------------*/
 		allocator_type get_allocator() const { return m_allocator; };
-
 
 	};
 
