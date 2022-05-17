@@ -50,13 +50,14 @@ int main()
 		d.printTree();
 		f.printTree();
 
+
 		ft::map<int, int>::value_compare comp = d.value_comp();
 
-		std::cout << *d.lower_bound(4) << std::endl;
-		iter = d.upper_bound(6);
-		ft::pair<ft::map<int, int>::iterator,
-				ft::map<int, int>::iterator> pi;
-		pi = d.equal_range(7);
+		// std::cout << *d.lower_bound(4) << std::endl;
+		// iter = d.upper_bound(6);
+		// ft::pair<ft::map<int, int>::iterator,
+		// 		ft::map<int, int>::iterator> pi;
+		// pi = d.equal_range(7);
 		std::map<int, int> smap;
 		for (int i = 0; i < 10; ++i) {
 			smap.insert(std::make_pair(i, i + 1));
@@ -64,12 +65,15 @@ int main()
 		std::pair< std::map<int, int>::iterator, std::map<int, int>::iterator> pa;
 
 		pa = smap.equal_range(7);
-		std::cout << *(pi.first) << " " << *(pi.second) << std::endl;
+		// std::cout << *(pi.first) << " " << *(pi.second) << std::endl;
 		std::cout << (pa.first)->second << " " << (pa.second)->second << std::endl;
 		std::cout << comp(ft::make_pair(13, 20), ft::make_pair(11, 20)) << std::endl;
 
 		for (ft::map<int, int>::reverse_iterator iter = a.rbegin(); iter != a.rend(); ++iter)
 			std::cout << *iter << std::endl;
+		
+		d[30] = 65234;
+		d.printTree();
 		std::cout << "DONE" << std::endl;
 	}	
 	system("leaks container_test");

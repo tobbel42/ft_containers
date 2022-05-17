@@ -28,7 +28,7 @@ OBJ=$(addprefix $(ODIR)/, $(OFILE))
 all:$(BIN)
 
 $(BIN): $(ODIR) $(OBJ) $(SRC) $(HDR)
-	$(CC) $(C_FLAGS) $(OBJ) -I $(INC) -o $(BIN)
+	$(CC) $(C_FLAGS)  $(OBJ) -I $(INC) -o $(BIN)
 
 $(ODIR):
 	mkdir obj
