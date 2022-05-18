@@ -12,134 +12,134 @@
 
 namespace ft {
 
-	template <class T>
-	class map_iterator: public rbTree_iterator<ft::rbNode<T> >
-	{
-		public:
-			typedef T					value_type;
-			typedef	ft::rbNode<T>		node_type;
-			// typedef	&T			reference;
-			// typedef	*T					pointer;
-			map_iterator() {};
-			map_iterator(const typename rbTree_iterator<node_type>::pointer ptr):
-				rbTree_iterator<node_type>(ptr) {};
-			map_iterator(const rbTree_iterator<node_type> & iter):
-				rbTree_iterator<node_type>(iter) {};
-			map_iterator(const map_iterator<value_type> & cpy):
-				rbTree_iterator<node_type>(cpy.base()) {};
+// 	template <class T>
+// 	class map_iterator: public rbTree_iterator<ft::rbNode<T> >
+// 	{
+// 		public:
+// 			typedef T					value_type;
+// 			typedef	ft::rbNode<T>		node_type;
+// 			// typedef	&T			reference;
+// 			// typedef	*T					pointer;
+// 			map_iterator() {};
+// 			map_iterator(const typename rbTree_iterator<node_type>::pointer ptr):
+// 				rbTree_iterator<node_type>(ptr) {};
+// 			map_iterator(const rbTree_iterator<node_type> & iter):
+// 				rbTree_iterator<node_type>(iter) {};
+// 			map_iterator(const map_iterator<value_type> & cpy):
+// 				rbTree_iterator<node_type>(cpy.base()) {};
 			
 	
 	
-			map_iterator & operator=(const map_iterator<value_type> & rhs) {
-				rbTree_iterator<node_type>::m_ptr = rhs.base();
-				return *this;
-			};
+// 			map_iterator & operator=(const map_iterator<value_type> & rhs) {
+// 				rbTree_iterator<node_type>::m_ptr = rhs.base();
+// 				return *this;
+// 			};
 
-			map_iterator & operator++() { this->next(); return *this; } ;
-			map_iterator operator++(int) {
-				map_iterator tmp = *this;
-				this->next();
-				return tmp;
-			}
-			map_iterator & operator--() { this->prev(); return *this; };
-			map_iterator operator--(int) {
-				map_iterator tmp = *this;
-				this->prev();
-				return tmp;
-			}
-			value_type	&operator*() const { return rbTree_iterator<node_type>::m_ptr->m_value; }
-			value_type	*operator->() const { return &(rbTree_iterator<node_type>::m_ptr->m_value);}
+// 			map_iterator & operator++() { this->next(); return *this; } ;
+// 			map_iterator operator++(int) {
+// 				map_iterator tmp = *this;
+// 				this->next();
+// 				return tmp;
+// 			}
+// 			map_iterator & operator--() { this->prev(); return *this; };
+// 			map_iterator operator--(int) {
+// 				map_iterator tmp = *this;
+// 				this->prev();
+// 				return tmp;
+// 			}
+// 			value_type	&operator*() const { return rbTree_iterator<node_type>::m_ptr->m_value; }
+// 			value_type	*operator->() const { return &(rbTree_iterator<node_type>::m_ptr->m_value);}
 
-	};
+// 	};
 
-	template <typename T, typename U>
-	bool operator==(const map_iterator<T> & lhs, const map_iterator<U> & rhs) {
-		return lhs.base() == rhs.base();
-	};
+// 	template <typename T, typename U>
+// 	bool operator==(const map_iterator<T> & lhs, const map_iterator<U> & rhs) {
+// 		return lhs.base() == rhs.base();
+// 	};
 
-	template <typename T, typename U>
-	bool operator!=(const map_iterator<T> & lhs, const map_iterator<U> & rhs) {
-		return lhs.base() != rhs.base();
-	};
+// 	template <typename T, typename U>
+// 	bool operator!=(const map_iterator<T> & lhs, const map_iterator<U> & rhs) {
+// 		return lhs.base() != rhs.base();
+// 	};
 
 
-	template <class T >
-	class const_map_iterator: public rbTree_iterator<ft::rbNode<const T> >
-	{
-		public:
-			typedef const T				value_type;
-			typedef	ft::rbNode<value_type>	node_type;
-			// const_map_iterator(const typename rbTree_iterator<node_type>::pointer ptr):
-			// 	rbTree_iterator<node_type>(ptr) {};
-			// const_map_iterator(const rbTree_iterator<node_type> & iter):
-			// 	rbTree_iterator<node_type>(iter) {};
-			const_map_iterator() {};
-			const_map_iterator(const map_iterator<T>& cpy):
-				rbTree_iterator<node_type>((node_type *)((void *)cpy.base())) {};
+// 	template <class T >
+// 	class const_map_iterator: public rbTree_iterator<ft::rbNode<const T> >
+// 	{
+// 		public:
+// 			typedef const T				value_type;
+// 			typedef	ft::rbNode<value_type>	node_type;
+// 			// const_map_iterator(const typename rbTree_iterator<node_type>::pointer ptr):
+// 			// 	rbTree_iterator<node_type>(ptr) {};
+// 			// const_map_iterator(const rbTree_iterator<node_type> & iter):
+// 			// 	rbTree_iterator<node_type>(iter) {};
+// 			const_map_iterator() {};
+// 			const_map_iterator(const map_iterator<T>& cpy):
+// 				rbTree_iterator<node_type>((node_type *)((void *)cpy.base())) {};
 	
-			value_type	&operator*() const { return rbTree_iterator<node_type>::m_ptr->m_value; }
-			value_type	*operator->() const { return &(rbTree_iterator<node_type>::m_ptr->m_value);}
+// 			value_type	&operator*() const { return rbTree_iterator<node_type>::m_ptr->m_value; }
+// 			value_type	*operator->() const { return &(rbTree_iterator<node_type>::m_ptr->m_value);}
 
-			const_map_iterator & operator=(const const_map_iterator<T> & rhs) {
-				rbTree_iterator<node_type>::m_ptr = rhs.base();
-				return *this;
-			};
+// 			const_map_iterator & operator=(const const_map_iterator<T> & rhs) {
+// 				rbTree_iterator<node_type>::m_ptr = rhs.base();
+// 				return *this;
+// 			};
 
-			const_map_iterator &	operator++() {this->next(); return *this; };
+// 			const_map_iterator &	operator++() {this->next(); return *this; };
 
 
-	};
+// 	};
 
-	template <typename T, typename U>
-	bool operator==(const_map_iterator<T> & lhs, const_map_iterator<U> & rhs) {
-		return lhs.base() == rhs.base();
-	};
+// 	template <typename T, typename U>
+// 	bool operator==(const_map_iterator<T> & lhs, const_map_iterator<U> & rhs) {
+// 		return lhs.base() == rhs.base();
+// 	};
 
-	template <typename T, typename U>
-	bool operator!=(const_map_iterator<T> & lhs, const_map_iterator<U> & rhs) {
-		return lhs.base() != rhs.base();
-	};
+// 	template <typename T, typename U>
+// 	bool operator!=(const_map_iterator<T> & lhs, const_map_iterator<U> & rhs) {
+// 		return lhs.base() != rhs.base();
+// 	};
 
-template <class MapIterator>
-	class reverse_map_iterator
-	// :public iterator<typename	iterator_traits<MapIterator>::difference_type,
-	// 			typename	iterator_traits<MapIterator>::value_type,
-	// 			typename	iterator_traits<MapIterator>::pointer,
-	// 			typename	iterator_traits<MapIterator>::reference,
-	// 			typename	iterator_traits<MapIterator>::iterator_category>
-	{
-		protected:
-		MapIterator	m_current;
-		public:
-		reverse_map_iterator() {};
-		reverse_map_iterator(MapIterator x) : m_current(x) {};
-		MapIterator base() const { return m_current; };
+// template <class MapIterator>
+// 	class reverse_map_iterator
+// 	// :public iterator<typename	iterator_traits<MapIterator>::difference_type,
+// 	// 			typename	iterator_traits<MapIterator>::value_type,
+// 	// 			typename	iterator_traits<MapIterator>::pointer,
+// 	// 			typename	iterator_traits<MapIterator>::reference,
+// 	// 			typename	iterator_traits<MapIterator>::iterator_category>
+// 	{
+// 		protected:
+// 		MapIterator	m_current;
+// 		public:
+// 		reverse_map_iterator() {};
+// 		reverse_map_iterator(MapIterator x) : m_current(x) {};
+// 		MapIterator base() const { return m_current; };
 
-		reverse_map_iterator&	operator++() { --m_current; return *this; };
-		reverse_map_iterator	operator++(int) {
-			MapIterator tmp = m_current;
-			--m_current;
-			return tmp; }
-		reverse_map_iterator&	operator--() { ++m_current; return *this; };
-		reverse_map_iterator	operator--(int) {
-			MapIterator tmp = m_current;
-			++m_current;
-			return tmp; };
+// 		reverse_map_iterator&	operator++() { --m_current; return *this; };
+// 		reverse_map_iterator	operator++(int) {
+// 			MapIterator tmp = m_current;
+// 			--m_current;
+// 			return tmp; }
+// 		reverse_map_iterator&	operator--() { ++m_current; return *this; };
+// 		reverse_map_iterator	operator--(int) {
+// 			MapIterator tmp = m_current;
+// 			++m_current;
+// 			return tmp; };
 
-		typename MapIterator::value_type&	operator*() const { return *m_current; };
-		typename MapIterator::value_type*	operator->() const { return m_current.operator->(); };
-	};
+// 		typename MapIterator::value_type&	operator*() const { return *m_current; };
+// 		typename MapIterator::value_type*	operator->() const { return m_current.operator->(); };
+// 	};
 
-	template <class T1, class T2>
-	bool operator==(const reverse_map_iterator<T1> & rhs,
-					const reverse_map_iterator<T2> &lhs) {
-		return rhs.base() == lhs.base();
-	};
-	template <class T1, class T2>
-	bool operator!=(const reverse_map_iterator<T1> & rhs,
-					const reverse_map_iterator<T2> &lhs) {
-		return rhs.base() != lhs.base();
-	};
+// 	template <class T1, class T2>
+// 	bool operator==(const reverse_map_iterator<T1> & rhs,
+// 					const reverse_map_iterator<T2> &lhs) {
+// 		return rhs.base() == lhs.base();
+// 	};
+// 	template <class T1, class T2>
+// 	bool operator!=(const reverse_map_iterator<T1> & rhs,
+// 					const reverse_map_iterator<T2> &lhs) {
+// 		return rhs.base() != lhs.base();
+// 	};
 
 
 	template <class Key, class T, class Compare = ft::less<Key>,
@@ -199,18 +199,13 @@ template <class MapIterator>
 		typedef typename ft::rbTree<value_type, map_compare, allocator_type>
 																tree_type;
 		typedef typename tree_type::node_type					node_type;
-
-		// typedef	ft::map_iterator<value_type>			iterator;
-		// typedef ft::const_map_iterator<value_type>		const_iterator;
-		// typedef ft::reverse_map_iterator<iterator>		reverse_iterator;
-		// typedef ft::reverse_iterator<const iterator>	const_reverse_iterator;
-
-		typedef typename	tree_type::iterator			iterator;
-		typedef typename	tree_type::reverse_iterator 	reverse_iterator;
-		typedef typename	tree_type::const_iterator		const_iterator;
-		typedef typename	tree_type::const_reverse_iterator const_reverse_iterator;
-		typedef	typename	ft::iterator_traits<iterator>::difference_type
-																difference_type;
+		typedef typename tree_type::iterator			iterator;
+		typedef typename tree_type::reverse_iterator 	reverse_iterator;
+		typedef typename tree_type::const_iterator		const_iterator;
+		typedef typename tree_type::const_reverse_iterator
+														const_reverse_iterator;
+		typedef	typename ft::iterator_traits<iterator>::difference_type
+														difference_type;
 
 		private:
 
@@ -244,7 +239,8 @@ template <class MapIterator>
 				m_tree.insertValue(*iter, iter->first);
 			return *this;
 		};
-		
+		iterator getLoopback() { return m_tree.getLoopback(); };
+		iterator getRoot() { return m_tree.getRoot(); };
 		/*destructor----------------------------------------------------------*/
 		~map() { clear(); };
 
@@ -290,8 +286,13 @@ template <class MapIterator>
 			return m_tree.deleteValue(key);
 		};
 		void erase (iterator first, iterator last) {
-			for (; first != last; ++first)
-				erase(first);
+			iterator tmp;
+			while (first != last) 
+			{
+				tmp = first;
+				++first;
+				erase(tmp);
+			}
 		};
 		void swap(map & x) {
 			m_tree.swap(x.m_tree);
@@ -315,26 +316,26 @@ template <class MapIterator>
 				return 1;
 			return 0;
 		};
-		// iterator lower_bound(const key_type & k) {
-		// 	return m_tree.lower_bound(k);
-		// };
-		// const_iterator lower_bound(const key_type & k) const {
-		// 	return const_iterator(m_tree.lower_bound(k));
-		// };
-		// iterator upper_bound(const key_type & k) {
-		// 	return m_tree.upper_bound(k);
-		// };
-		// const_iterator upper_bound(const key_type & k) const {
-		// 	return const_iterator(m_tree.upper_bound(k));
-		// };
-		// ft::pair<iterator, iterator> equal_range(const key_type& k) {
-		// 	return ft::make_pair(m_tree.lower_bound(k), m_tree.upper_bound(k));
-		// };
-		// ft::pair<const_iterator, const_iterator>
-		// equal_range(const key_type & k) const {
-		// 	return ft::make_pair(const_iterator(m_tree.lower_bound(k)),
-		// 						const_iterator(m_tree.upper_bound(k)));
-		// };
+		iterator lower_bound(const key_type & k) {
+			return m_tree.lower_bound(k);
+		};
+		const_iterator lower_bound(const key_type & k) const {
+			return m_tree.lower_bound(k);
+		};
+		iterator upper_bound(const key_type & k) {
+			return m_tree.upper_bound(k);
+		};
+		const_iterator upper_bound(const key_type & k) const {
+			return const_iterator(m_tree.upper_bound(k));
+		};
+		ft::pair<iterator, iterator> equal_range(const key_type& k) {
+			return ft::make_pair(m_tree.lower_bound(k), m_tree.upper_bound(k));
+		};
+		ft::pair<const_iterator, const_iterator>
+		equal_range(const key_type & k) const {
+			return ft::make_pair(const_iterator(m_tree.lower_bound(k)),
+								const_iterator(m_tree.upper_bound(k)));
+		};
 
 		/*Utils---------------------------------------------------------------*/
 		//need overhaul, infinity on empty map

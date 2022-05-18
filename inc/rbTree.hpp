@@ -44,13 +44,13 @@ namespace ft
 		/*Operators-----------------------------------------------------------*/
 		binary_tree_iterator & operator++() { next(); return *this; };
 		binary_tree_iterator operator++(int) {
-			binary_tree_iterator tmp = this;
+			binary_tree_iterator tmp = *this;
 			next();
 			return tmp;
 		};
 		binary_tree_iterator & operator--() { prev(); return *this; };
 		binary_tree_iterator operator--(int) {
-			binary_tree_iterator tmp = this;
+			binary_tree_iterator tmp = *this;
 			prev();
 			return tmp;
 		};
@@ -124,113 +124,113 @@ namespace ft
 	return rhs.base() != lhs.base();				
 	};
 
-	template<typename T>
-	class rbTree_iterator
-	{
-		public:
-			typedef iterator<bidirectional_iterator_tag, T> iterator_type;
-			typedef typename iterator_traits<iterator_type>::difference_type
-				difference_type; 
-			typedef typename iterator_traits<iterator_type>::value_type
-				value_type;
-			typedef typename iterator_traits<iterator_type>::pointer
-				pointer;
-			typedef typename iterator_traits<iterator_type>::reference
-				reference;
-			typedef typename iterator_traits<iterator_type>::iterator_category
-				iterator_category;
+	// template<typename T>
+	// class rbTree_iterator
+	// {
+	// 	public:
+	// 		typedef iterator<bidirectional_iterator_tag, T> iterator_type;
+	// 		typedef typename iterator_traits<iterator_type>::difference_type
+	// 			difference_type; 
+	// 		typedef typename iterator_traits<iterator_type>::value_type
+	// 			value_type;
+	// 		typedef typename iterator_traits<iterator_type>::pointer
+	// 			pointer;
+	// 		typedef typename iterator_traits<iterator_type>::reference
+	// 			reference;
+	// 		typedef typename iterator_traits<iterator_type>::iterator_category
+	// 			iterator_category;
 		
-		protected:
+	// 	protected:
 		
-		pointer	m_ptr;
+	// 	pointer	m_ptr;
 		
-		public:
+	// 	public:
 
-		rbTree_iterator() : m_ptr(NULL) {};
-		rbTree_iterator(pointer ptr) : m_ptr(ptr) {};
-		rbTree_iterator(const rbTree_iterator& cpy) { *this = cpy; };
-		~rbTree_iterator() {};
+	// 	rbTree_iterator() : m_ptr(NULL) {};
+	// 	rbTree_iterator(pointer ptr) : m_ptr(ptr) {};
+	// 	rbTree_iterator(const rbTree_iterator& cpy) { *this = cpy; };
+	// 	~rbTree_iterator() {};
 
 
-		pointer	base() const { return m_ptr; };
+	// 	pointer	base() const { return m_ptr; };
 
-		rbTree_iterator&	operator=(const rbTree_iterator & rhs) {
-			m_ptr = rhs.base();
-			return *this;
-		};
+	// 	rbTree_iterator&	operator=(const rbTree_iterator & rhs) {
+	// 		m_ptr = rhs.base();
+	// 		return *this;
+	// 	};
 
-		value_type &operator*() const { return m_ptr->m_value; };
-		value_type *operator->() const { return &m_ptr->m_value; };
+	// 	value_type &operator*() const { return m_ptr->m_value; };
+	// 	value_type *operator->() const { return &m_ptr->m_value; };
 
-		rbTree_iterator & operator++() { next(); return *this; };
-		rbTree_iterator	operator++(int)	{
-			rbTree_iterator tmp;
-			next();
-			return tmp;
-		};
-		rbTree_iterator & operator--() { prev(); return *this; };
-		rbTree_iterator	operator--(int)	{
-			rbTree_iterator tmp;
-			prev();
-			return tmp;
-		};
+	// 	rbTree_iterator & operator++() { next(); return *this; };
+	// 	rbTree_iterator	operator++(int)	{
+	// 		rbTree_iterator tmp;
+	// 		next();
+	// 		return tmp;
+	// 	};
+	// 	rbTree_iterator & operator--() { prev(); return *this; };
+	// 	rbTree_iterator	operator--(int)	{
+	// 		rbTree_iterator tmp;
+	// 		prev();
+	// 		return tmp;
+	// 	};
 
-		void next() {
-			if (m_ptr)
-			{
-				if (m_ptr->right)
-				{
-					m_ptr = m_ptr->right;
-					while (m_ptr->left)
-						m_ptr = m_ptr->left;
-				}
-				else if (!m_ptr->parent)
-					m_ptr = NULL;
-				else if (m_ptr == m_ptr->parent->left)
-					m_ptr = m_ptr->parent;
-				else if (m_ptr == m_ptr->parent->right)
-				{
-					while (m_ptr->parent && m_ptr != m_ptr->parent->left)
-						m_ptr = m_ptr->parent;
-					m_ptr = m_ptr->parent;
-				}
-			}
-		};
+	// 	void next() {
+	// 		if (m_ptr)
+	// 		{
+	// 			if (m_ptr->right)
+	// 			{
+	// 				m_ptr = m_ptr->right;
+	// 				while (m_ptr->left)
+	// 					m_ptr = m_ptr->left;
+	// 			}
+	// 			else if (!m_ptr->parent)
+	// 				m_ptr = NULL;
+	// 			else if (m_ptr == m_ptr->parent->left)
+	// 				m_ptr = m_ptr->parent;
+	// 			else if (m_ptr == m_ptr->parent->right)
+	// 			{
+	// 				while (m_ptr->parent && m_ptr != m_ptr->parent->left)
+	// 					m_ptr = m_ptr->parent;
+	// 				m_ptr = m_ptr->parent;
+	// 			}
+	// 		}
+	// 	};
 
-		void prev() {
-			if (m_ptr)
-			{
-				if (m_ptr->left)
-				{
-					m_ptr = m_ptr->left;
-					while (m_ptr->right)
-						m_ptr = m_ptr->right;
-				}
-				else if (!m_ptr->parent)
-					m_ptr = NULL;
-				else if (m_ptr == m_ptr->parent->right)
-					m_ptr = m_ptr->parent;
-				else if (m_ptr == m_ptr->parent->left)
-				{
-					while (m_ptr->parent && m_ptr != m_ptr->parent->right)
-						m_ptr = m_ptr->parent;
-					m_ptr = m_ptr->parent;
-				}
-			}	
-		};
-	};
+	// 	void prev() {
+	// 		if (m_ptr)
+	// 		{
+	// 			if (m_ptr->left)
+	// 			{
+	// 				m_ptr = m_ptr->left;
+	// 				while (m_ptr->right)
+	// 					m_ptr = m_ptr->right;
+	// 			}
+	// 			else if (!m_ptr->parent)
+	// 				m_ptr = NULL;
+	// 			else if (m_ptr == m_ptr->parent->right)
+	// 				m_ptr = m_ptr->parent;
+	// 			else if (m_ptr == m_ptr->parent->left)
+	// 			{
+	// 				while (m_ptr->parent && m_ptr != m_ptr->parent->right)
+	// 					m_ptr = m_ptr->parent;
+	// 				m_ptr = m_ptr->parent;
+	// 			}
+	// 		}	
+	// 	};
+	// };
 
-	template <class T1, class T2>
-	bool operator==(const rbTree_iterator<T1> & rhs,
-					const rbTree_iterator<T2> & lhs) {
-	return (void *)rhs.base() == (void *)lhs.base();				
-	};
+	// template <class T1, class T2>
+	// bool operator==(const rbTree_iterator<T1> & rhs,
+	// 				const rbTree_iterator<T2> & lhs) {
+	// return (void *)rhs.base() == (void *)lhs.base();				
+	// };
 
-	template <class T1, class T2>
-	bool operator!=(const rbTree_iterator<T1> & rhs,
-					const rbTree_iterator<T2> & lhs) {
-	return rhs.base() != lhs.base();				
-	};
+	// template <class T1, class T2>
+	// bool operator!=(const rbTree_iterator<T1> & rhs,
+	// 				const rbTree_iterator<T2> & lhs) {
+	// return rhs.base() != lhs.base();				
+	// };
 
 	enum eRB {RED, BLACK};
 
@@ -257,15 +257,7 @@ namespace ft
 				parent(NULL),
 				color(RED),
 				m_value(value) {};
-			~rbNode() {
-				if (parent)
-				{
-					if (this == parent->left)
-						parent->left = NULL;
-					else
-						parent->right = NULL;
-				}
-			};
+			~rbNode() {};
 			rbNode	&operator=(const rbNode & rhs)
 			{
 				left = rhs.left;
@@ -297,8 +289,7 @@ namespace ft
 
 		typedef class rbNode<value_type>					node_type;
 		typedef class rbNode<const value_type>				const_node_type;
-		// typedef rbTree_iterator<node_type>					iterator;
-		// typedef rbTree_iterator<const_node_type>			const_iterator;
+
 		typedef binary_tree_iterator<node_type *, rbTree, value_type>
 															iterator;
 		typedef binary_tree_iterator<const node_type *, rbTree, const value_type>
@@ -372,7 +363,8 @@ namespace ft
 		};
 	
 		/*Getter--------------------------------------------------------------*/
-		iterator getRoot() const { return iterator(m_root); };
+		iterator getRoot() { return iterator(m_root); };
+		iterator getLoopback(){ return iterator(&m_loopback); };
 
 		/*Operations----------------------------------------------------------*/
 		template<class _Key>
@@ -390,20 +382,35 @@ namespace ft
 			return iterator(end());
 		};
 		template<class _Key>
-		iterator	lower_bound(const _Key& k) const {
+		iterator	lower_bound(const _Key& k) {
 			iterator iter = begin();
 			while (iter != end() && m_comp(iter.base()->m_value, k))
 				++iter;
 			return iter;
 		};
 		template<class _Key>
-		iterator	upper_bound(const _Key & k) const {
+		const_iterator	lower_bound(const _Key& k) const {
+			const_iterator iter = begin();
+			while (iter != end() && m_comp(iter.base()->m_value, k))
+				++iter;
+			return iter;
+		};
+		template<class _Key>
+		iterator	upper_bound(const _Key & k) {
 			iterator iter = begin();
 			while (iter != end() && !m_comp(k, iter.base()->m_value))
 				++iter;
 			return (iter);
 			
 		};
+		template<class _Key>
+		const_iterator	upper_bound(const _Key & k) const {
+			const_iterator iter = begin();
+			while (iter != end() && !m_comp(k, iter.base()->m_value))
+				++iter;
+			return (iter);
+			
+		};		
 		template<class _Key>
 		ft::pair<iterator, iterator> equal_range (const _Key& k) {
 			return ft::make_pair(lower_bound(k), upper_bound(k));
@@ -466,12 +473,14 @@ namespace ft
 			ft::swap(m_root, tree.m_root);
 			ft::swap(m_size, tree.m_size);
 			m_root->parent = &m_loopback;
+			m_loopback.left = m_root;
 			tree.m_root->parent = &tree.m_loopback;
+			tree.m_loopback.left = m_root;
 		};
 		template <class _Key>
 		size_type	deleteValue(const _Key & key) {
 			node_type *node = findValue(key).base();
-			if (!node)
+			if (!node || node == &m_loopback)
 				return 0;
 			deleteNode(node);
 			return 1;
@@ -480,7 +489,10 @@ namespace ft
 			node = BSTdeletion(node);
 			//Case 1
 			if (node->color == RED)
+			{
+
 				removeNode(node);
+			}
 			else
 				fixDelete(node);
 			--m_size;
@@ -592,6 +604,19 @@ namespace ft
 		};
 		//check
 		void	removeNode(node_type *delNode) {
+
+
+			if (delNode == m_root)
+			{
+				m_loopback.left = &m_loopback;
+			}
+			else
+			{
+				if (delNode->parent->left == delNode)
+					delNode->parent->left = NULL;
+				else if (delNode->parent->right == delNode)
+					delNode->parent->right = NULL;
+			}
 			m_value_allocator.destroy(&(delNode->m_value));
 			m_node_allocator.destroy(delNode);
 			m_node_allocator.deallocate(delNode, 1);
@@ -600,15 +625,38 @@ namespace ft
 			node_type *next;
 			while (node->left || node->right)
 			{
+				if (node == &m_loopback)
+					break;
 				if (node->left && node->right)
 					next = findSuccessor(node);
 				else if (node->left)
 					next = node->left;
 				else
 					next = node->right;
-				m_value_allocator.destroy(&node->m_value);
-				m_value_allocator.construct(&node->m_value, next->m_value);
-				node = next;
+				
+				//node swap, maybe own fkt
+				if (node == m_root)
+					m_root = next;
+				ft::swap(next->color, node->color);
+				if (node->right)
+					node->right->parent = next;
+				if (next->right)
+					next->right->parent = node;
+				if (node->left)
+					node->left->parent = next;
+				if (next->left)
+					next->left->parent = node;
+				ft::swap(next->right, node->right);
+				ft::swap(next->left, node->left);
+				if (node->parent->left == node)
+					node->parent->left = next;
+				else if (node->parent->right == node)
+					node->parent->right = next;
+				if (next->parent->left == next)
+					next->parent->left = node;
+				else if (next->parent->right == next)
+					next->parent->right = node;
+				ft::swap(next->parent, node->parent);
 			}
 			return node;
 		};
@@ -765,6 +813,7 @@ namespace ft
 					{
 						ft::swap(sibling->color, parent->color);
 						rotate(sibling);
+
 					}
 					else
 					{
@@ -785,10 +834,12 @@ namespace ft
 							}
 							else
 								delNode = parent;
+
 						}
 						//Case 5 & 6
 						else
 						{
+	
 							if (nearChild && nearChild->color == RED)
 							{
 								ft::swap(sibling->color, nearChild->color);
