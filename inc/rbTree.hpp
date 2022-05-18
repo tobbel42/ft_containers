@@ -323,7 +323,8 @@ namespace ft
 			m_size(0) {
 				m_loopback.left = &m_loopback;
 			};
-		rbTree(const rbTree & cpy) { *this = cpy; };
+		rbTree(const rbTree & cpy):
+			m_comp(cpy.m_comp) { *this = cpy; };
 		//maby iterator based overhaul
 		rbTree	&operator=(const rbTree & rhs) {
 			clearTree();
@@ -380,6 +381,20 @@ namespace ft
 					return iterator(node);
 			}
 			return iterator(end());
+		};
+		template<class _Key>
+		const_iterator findValue(const _Key & key) const {
+			node_type	*node = m_root;
+			while (node)
+			{
+				if (m_comp(node->m_value, key))
+					node = node->right;
+				else if (m_comp(key, node->m_value))
+					node = node->left;
+				else
+					return const_iterator(node);
+			}
+			return const_iterator(end());
 		};
 		template<class _Key>
 		iterator	lower_bound(const _Key& k) {
@@ -470,12 +485,11 @@ namespace ft
 		};
 		//TODO fix with feedback
 		void swap(rbTree & tree) {
-			ft::swap(m_root, tree.m_root);
-			ft::swap(m_size, tree.m_size);
+			std::swap(m_loopback.left, tree.m_loopback.left);
+			std::swap(m_root, tree.m_root);
+			std::swap(m_size, tree.m_size);
 			m_root->parent = &m_loopback;
-			m_loopback.left = m_root;
 			tree.m_root->parent = &tree.m_loopback;
-			tree.m_loopback.left = m_root;
 		};
 		template <class _Key>
 		size_type	deleteValue(const _Key & key) {
@@ -605,6 +619,9 @@ namespace ft
 		//check
 		void	removeNode(node_type *delNode) {
 
+			// std::cout << delNode->m_value << std::endl;
+			// std::cout << delNode << " "
+			// << m_root << " " << &m_loopback;
 
 			if (delNode == m_root)
 			{
@@ -617,7 +634,8 @@ namespace ft
 				else if (delNode->parent->right == delNode)
 					delNode->parent->right = NULL;
 			}
-			m_value_allocator.destroy(&(delNode->m_value));
+			//TARGET
+			//m_value_allocator.destroy(&(delNode->m_value));
 			m_node_allocator.destroy(delNode);
 			m_node_allocator.deallocate(delNode, 1);
 		};
@@ -637,7 +655,7 @@ namespace ft
 				//node swap, maybe own fkt
 				if (node == m_root)
 					m_root = next;
-				ft::swap(next->color, node->color);
+				std::swap(next->color, node->color);
 				if (node->right)
 					node->right->parent = next;
 				if (next->right)
@@ -646,8 +664,8 @@ namespace ft
 					node->left->parent = next;
 				if (next->left)
 					next->left->parent = node;
-				ft::swap(next->right, node->right);
-				ft::swap(next->left, node->left);
+				std::swap(next->right, node->right);
+				std::swap(next->left, node->left);
 				if (node->parent->left == node)
 					node->parent->left = next;
 				else if (node->parent->right == node)
@@ -656,7 +674,7 @@ namespace ft
 					next->parent->left = node;
 				else if (next->parent->right == next)
 					next->parent->right = node;
-				ft::swap(next->parent, node->parent);
+				std::swap(next->parent, node->parent);
 			}
 			return node;
 		};
@@ -811,7 +829,7 @@ namespace ft
 					//case 4
 					if (sibling && sibling->color == RED)
 					{
-						ft::swap(sibling->color, parent->color);
+						std::swap(sibling->color, parent->color);
 						rotate(sibling);
 
 					}
@@ -842,12 +860,12 @@ namespace ft
 	
 							if (nearChild && nearChild->color == RED)
 							{
-								ft::swap(sibling->color, nearChild->color);
+								std::swap(sibling->color, nearChild->color);
 								rotate(nearChild);
 								farChild = sibling;
 								sibling = nearChild;
 							}
-							ft::swap(parent->color, sibling->color);
+							std::swap(parent->color, sibling->color);
 							rotate(sibling);
 							farChild->color = BLACK;
 							if (first)

@@ -378,10 +378,10 @@ namespace ft
 			};
 
 			void swap (vector& x) {
-				ft::swap(start, x.start);
-				ft::swap(finish, x.finish);
-				ft::swap(end_of_storage, x.end_of_storage);
-				ft::swap(allocator, x.allocator);
+				std::swap(start, x.start);
+				std::swap(finish, x.finish);
+				std::swap(end_of_storage, x.end_of_storage);
+				std::swap(allocator, x.allocator);
 			};
 
 			void clear () {
