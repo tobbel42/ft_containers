@@ -124,113 +124,6 @@ namespace ft
 	return rhs.base() != lhs.base();				
 	};
 
-	// template<typename T>
-	// class rbTree_iterator
-	// {
-	// 	public:
-	// 		typedef iterator<bidirectional_iterator_tag, T> iterator_type;
-	// 		typedef typename iterator_traits<iterator_type>::difference_type
-	// 			difference_type; 
-	// 		typedef typename iterator_traits<iterator_type>::value_type
-	// 			value_type;
-	// 		typedef typename iterator_traits<iterator_type>::pointer
-	// 			pointer;
-	// 		typedef typename iterator_traits<iterator_type>::reference
-	// 			reference;
-	// 		typedef typename iterator_traits<iterator_type>::iterator_category
-	// 			iterator_category;
-		
-	// 	protected:
-		
-	// 	pointer	m_ptr;
-		
-	// 	public:
-
-	// 	rbTree_iterator() : m_ptr(NULL) {};
-	// 	rbTree_iterator(pointer ptr) : m_ptr(ptr) {};
-	// 	rbTree_iterator(const rbTree_iterator& cpy) { *this = cpy; };
-	// 	~rbTree_iterator() {};
-
-
-	// 	pointer	base() const { return m_ptr; };
-
-	// 	rbTree_iterator&	operator=(const rbTree_iterator & rhs) {
-	// 		m_ptr = rhs.base();
-	// 		return *this;
-	// 	};
-
-	// 	value_type &operator*() const { return m_ptr->m_value; };
-	// 	value_type *operator->() const { return &m_ptr->m_value; };
-
-	// 	rbTree_iterator & operator++() { next(); return *this; };
-	// 	rbTree_iterator	operator++(int)	{
-	// 		rbTree_iterator tmp;
-	// 		next();
-	// 		return tmp;
-	// 	};
-	// 	rbTree_iterator & operator--() { prev(); return *this; };
-	// 	rbTree_iterator	operator--(int)	{
-	// 		rbTree_iterator tmp;
-	// 		prev();
-	// 		return tmp;
-	// 	};
-
-	// 	void next() {
-	// 		if (m_ptr)
-	// 		{
-	// 			if (m_ptr->right)
-	// 			{
-	// 				m_ptr = m_ptr->right;
-	// 				while (m_ptr->left)
-	// 					m_ptr = m_ptr->left;
-	// 			}
-	// 			else if (!m_ptr->parent)
-	// 				m_ptr = NULL;
-	// 			else if (m_ptr == m_ptr->parent->left)
-	// 				m_ptr = m_ptr->parent;
-	// 			else if (m_ptr == m_ptr->parent->right)
-	// 			{
-	// 				while (m_ptr->parent && m_ptr != m_ptr->parent->left)
-	// 					m_ptr = m_ptr->parent;
-	// 				m_ptr = m_ptr->parent;
-	// 			}
-	// 		}
-	// 	};
-
-	// 	void prev() {
-	// 		if (m_ptr)
-	// 		{
-	// 			if (m_ptr->left)
-	// 			{
-	// 				m_ptr = m_ptr->left;
-	// 				while (m_ptr->right)
-	// 					m_ptr = m_ptr->right;
-	// 			}
-	// 			else if (!m_ptr->parent)
-	// 				m_ptr = NULL;
-	// 			else if (m_ptr == m_ptr->parent->right)
-	// 				m_ptr = m_ptr->parent;
-	// 			else if (m_ptr == m_ptr->parent->left)
-	// 			{
-	// 				while (m_ptr->parent && m_ptr != m_ptr->parent->right)
-	// 					m_ptr = m_ptr->parent;
-	// 				m_ptr = m_ptr->parent;
-	// 			}
-	// 		}	
-	// 	};
-	// };
-
-	// template <class T1, class T2>
-	// bool operator==(const rbTree_iterator<T1> & rhs,
-	// 				const rbTree_iterator<T2> & lhs) {
-	// return (void *)rhs.base() == (void *)lhs.base();				
-	// };
-
-	// template <class T1, class T2>
-	// bool operator!=(const rbTree_iterator<T1> & rhs,
-	// 				const rbTree_iterator<T2> & lhs) {
-	// return rhs.base() != lhs.base();				
-	// };
 
 	enum eRB {RED, BLACK};
 
@@ -328,12 +221,8 @@ namespace ft
 		//maby iterator based overhaul
 		rbTree	&operator=(const rbTree & rhs) {
 			clearTree();
-			node_type *node = leftMost(rhs.getRoot());
-			while (node)
-			{
-				insertValue(node->value);
-				node = rhs.next(node);
-			}
+			for(iterator iter = rhs.begin(); iter != rhs.end(); ++iter)
+				insertValue(*iter, (*iter).first);
 			return *this;
 		};
 

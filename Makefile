@@ -8,14 +8,17 @@ INC=inc/
 HFILE=iterator.hpp\
 	vector.hpp\
 	type_traits.hpp\
-	utils.hpp
+	utils.hpp\
+	map.hpp\
+	stack.hpp\
+	rbTree.hpp
 
 
 HDR=$(addprefix $(INC)/, $(HFILE))
 
 SDIR=src
 
-SFILE=main3.cpp
+SFILE=main4.cpp
 
 SRC=$(addprefix $(SDIR)/, $(SFILE))
 

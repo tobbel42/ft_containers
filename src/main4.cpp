@@ -1,22 +1,50 @@
 #include "utils.hpp"
 #include <iostream>
-#include "rbTree.hpp"
+#include "map.hpp"
+#include <map>
+#include <ctime>
 
 #define PLN(txt) std::cout << txt << std::endl
 
+#define START  begin = std::clock()
+	
+#define STOP PLN("time: " <<static_cast<double>((std::clock() - begin)) /CLOCKS_PER_SEC << "s")
+
+
+
+#define NSP std
+
+
 int main() {
-	ft::rbNode<ft::pair<int, int> > a;
-
-	a.m_value = ft::make_pair(33, 111);
-
-	const ft::pair<int, int> b(a.m_value);
-
-	ft::rbNode<const ft::pair<int, int> > c(b);
 
 
-
-	PLN(a.m_value);
-	PLN(b);
+	clock_t begin = std::clock();	
+	// std::cout << "How many Elements?" << std::endl;
+	// int x; std::cin >> x;
+	for(int x = 1; x <= 10000000; x *= 10)
+	{
+	PLN(x);
+	START;
+	PLN("OWN");
+	ft::map<int, int> omap;
+	for (int i = 0; i < x; ++i)
+		omap.insert(ft::make_pair(i, i + 1));
+	for (int i = 0; i < x; ++i)
+		omap.find(i);
+	for (int i = 0; i < x; ++i)	
+		omap.erase(i);
+	STOP;
+	START;
+	PLN("STD");
+	std::map<int, int> smap;
+	for (int i = 0; i < x; ++i)
+		smap.insert(std::make_pair(i, i + 1));
+	for (int i = 0; i < x; ++i)
+		smap.find(i);
+	for (int i = 0; i < x; ++i)	
+		smap.erase(i);
+	STOP;
+	}
 
 	return 0;
 };
