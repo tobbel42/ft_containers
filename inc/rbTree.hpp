@@ -36,7 +36,7 @@ namespace ft
 			typename container::node_type *, container,
 			typename container::value_type> & other):
 			m_current(other.base()) {};
-		
+
 		/*Getters-------------------------------------------------------------*/
 		const node_type &base() const { return m_current; };
 		node_type &base() { return m_current; };

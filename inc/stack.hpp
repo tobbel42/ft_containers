@@ -51,6 +51,7 @@ namespace ft
 							const stack<T1,Container1>& rhs);
 	};
 
+	/*NonMemberOperators------------------------------------------------------*/
 	template <class T, class Container>
 	bool operator==(const stack<T,Container>& lhs,
 					const stack<T,Container>& rhs) {
