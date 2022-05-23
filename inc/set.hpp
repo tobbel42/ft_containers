@@ -39,14 +39,14 @@ namespace ft {
 		// 	public:
 		// 	set_compare () : comp(key_compare()) {};
 		// 	bool operator() (const value_type& x, const value_type& y) const {
-		// 		return comp(x.first, y.first);
+		// 		return comp(x, y);
 		// 	};
-		// 	bool operator() (const value_type& x, const key_type& y) const {
-		// 		return comp(x.first, y);
-		// 	};
-		// 	bool operator() (const key_type& x, const value_type& y) const {
-		// 		return comp(x, y.first);
-		// 	};
+		// 	// bool operator() (const value_type& x, const key_type& y) const {
+		// 	// 	return comp(x.first, y);
+		// 	// };
+		// 	// bool operator() (const key_type& x, const value_type& y) const {
+		// 	// 	return comp(x, y.first);
+		// 	// };
 
 		// };
 
@@ -55,6 +55,7 @@ namespace ft {
 		// 	friend class set;
 		// 	protected:
 		// 	Compare comp;
+		// 	value_compare () : comp (comp()) {}; 
 		// 	value_compare (Compare c) : comp(c) {};
 
 		// 	public:
@@ -64,7 +65,7 @@ namespace ft {
 		// 	};
 		// };
 
-		typedef typename ft::rbTree<value_type, value_compare, allocator_type>
+		typedef typename ft::rbTree<value_type, key_compare, allocator_type>
 																tree_type;
 		typedef typename tree_type::node_type				node_type;
 		typedef typename tree_type::const_iterator			iterator;
@@ -143,9 +144,9 @@ namespace ft {
 			for (; first != last; ++first)
 				m_tree.insertValue(*first, *first);
 		};
-		void erase (iterator position) {
-			m_tree.deleteValue(position);
-		}
+		void erase (iterator position) { // dirty hack pls remove
+			m_tree.deleteNode((rbNode<T> *)((void *)position.base()));
+		};
 		size_type erase(const key_type & key) {
 			return m_tree.deleteValue(key);
 		};

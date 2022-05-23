@@ -27,6 +27,7 @@ namespace ft
 		node_type	m_current;
 
 		public:
+		
 		/*Constructors--------------------------------------------------------*/
 		binary_tree_iterator():
 			m_current() {};
@@ -393,7 +394,6 @@ namespace ft
 			//Case 1
 			if (node->color == RED)
 			{
-
 				removeNode(node);
 			}
 			else
