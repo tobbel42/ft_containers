@@ -421,8 +421,7 @@ namespace ft
 			return treeCheckHelper(startNode, blackHeight, 0);
 		};
 		void printTree() const {
-			std::cout << "###" << m_loopback.m_value << "###" << std::endl;
-			print("", m_root, false);
+			printNode("", m_root, false);
 		};
 
 		private:
@@ -485,17 +484,17 @@ namespace ft
 			return true;
 		};
 
-		void print(const std::string & prefix, node_type *node, bool isLeft)
+		void printNode(const std::string & prefix, node_type *node, bool isLeft)
 		const {
 			if (node)
 			{
-				std::cout << prefix;
-				std::cout << (isLeft ? "├──" : "└──");
-				std::cout << 
+				std::cout << prefix << (isLeft ? "├──" : "└──") << 
 					(node->color == BLACK ? "\033[48;5;0m" : "\033[48;5;9m")
 					<< node->m_value << "\033[0m"<< std::endl;
-				print(prefix + (isLeft ? "│   " : "    "), node->left, true);
-				print(prefix + (isLeft ? "│   " : "    "), node->right, false);
+				printNode(prefix + (isLeft ? "│   " : "    "),
+					node->left, true);
+				printNode(prefix + (isLeft ? "│   " : "    "),
+					node->right, false);
 			}
 		}
 		//check

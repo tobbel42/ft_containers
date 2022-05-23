@@ -6,13 +6,6 @@
 
 namespace ft{
 
-	// template<typename T>
-	// void	swap(T &a, T &b) {
-	// 	T	temp(a);
-	// 	a = b;
-	// 	b = temp;
-	// };
-
 	template<typename T>
 	T	max(T a, T b) {
 		if (a > b)
@@ -27,7 +20,8 @@ namespace ft{
 
 	//redo
 	template <class InputIterator1, class InputIterator2>
-	bool equal ( InputIterator1 first1, InputIterator1 last1, InputIterator2 first2 ) {
+	bool equal ( InputIterator1 first1, InputIterator1 last1,
+				InputIterator2 first2 ) {
   		while (first1 != last1) {
     		if (!(*first1 == *first2))
     			return false;
@@ -91,7 +85,6 @@ namespace ft{
 	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
 		return lhs.first==rhs.first && lhs.second==rhs.second;
 	};
-
 	template <class T1, class T2>
 	bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
 		return !(lhs==rhs);
@@ -99,7 +92,8 @@ namespace ft{
 
 	template <class T1, class T2>
 	bool operator< (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
-		return lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second);
+		return lhs.first<rhs.first ||
+			(!(rhs.first<lhs.first) && lhs.second<rhs.second);
 	};
 
 	template <class T1, class T2>
@@ -147,7 +141,6 @@ namespace ft{
 		
 	};
 
-
-}; //</ft>
+};
 
 #endif

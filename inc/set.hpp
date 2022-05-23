@@ -28,43 +28,6 @@ namespace ft {
 		typedef typename allocator_type::const_pointer		const_pointer;
 		typedef typename allocator_type::size_type			size_type;
 
-		// class set_compare:
-		// std::binary_function <value_type, value_type, bool> {
-		// 	friend class set;
-		// 	protected:
-
-		// 	Compare comp;
-		// 	set_compare (Compare c) : comp(c) {};
-		
-		// 	public:
-		// 	set_compare () : comp(key_compare()) {};
-		// 	bool operator() (const value_type& x, const value_type& y) const {
-		// 		return comp(x, y);
-		// 	};
-		// 	// bool operator() (const value_type& x, const key_type& y) const {
-		// 	// 	return comp(x.first, y);
-		// 	// };
-		// 	// bool operator() (const key_type& x, const value_type& y) const {
-		// 	// 	return comp(x, y.first);
-		// 	// };
-
-		// };
-
-		// class value_compare:
-		// std::binary_function <value_type, value_type, bool> {  
-		// 	friend class set;
-		// 	protected:
-		// 	Compare comp;
-		// 	value_compare () : comp (comp()) {}; 
-		// 	value_compare (Compare c) : comp(c) {};
-
-		// 	public:
-
-		// 	bool operator() (const value_type& x, const value_type& y) const {
-		//     	return comp(x, y);
-		// 	};
-		// };
-
 		typedef typename ft::rbTree<value_type, key_compare, allocator_type>
 																tree_type;
 		typedef typename tree_type::node_type				node_type;
