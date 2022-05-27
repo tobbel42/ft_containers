@@ -2,7 +2,7 @@ CC=c++
 C_FLAGS=-Wall -Wextra -Werror -std=c++98 
 S_FLAGS=-g -fsanitize=address
 FTBIN=ownContainerTest
-STDBIN=stdContainerTest
+STDBIN=stlContainerTest
 
 
 INC=inc/

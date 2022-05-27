@@ -175,6 +175,8 @@ namespace ft {
 	};
 
 	/*NonMemberOperators------------------------------------------------------*/
+	
+
 	template <class T, class Compare, class Alloc>
   	bool operator== ( const set<T,Compare,Alloc>& lhs,
                     const set<T,Compare,Alloc>& rhs ) {
@@ -209,6 +211,11 @@ namespace ft {
                     const set<T,Compare,Alloc>& rhs ) {
 		return !(lhs < rhs);
 	};
+	template <class T, class Compare, class Alloc>
+	void swap(set<T,Compare,Alloc>& lhs, set<T,Compare,Alloc>& rhs ) {
+		lhs.swap(rhs);
+	};
+
 
 }; //<\ft>
 

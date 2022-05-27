@@ -129,8 +129,8 @@ namespace ft
 	enum eRB {RED, BLACK};
 
 	template<class T >
-	class rbNode {
-		public: // TODO fix
+	struct rbNode {
+		public:
 			typedef T			value_type;
 			typedef	rbNode*		node_pointer;
 			typedef eRB			color_type;
@@ -139,27 +139,6 @@ namespace ft
 			node_pointer		parent;
 			color_type			color;
 			value_type			m_value;
-	
-			rbNode():
-				left(NULL),
-				right(NULL),
-				parent(NULL),
-				color(RED) {};
-			rbNode(const value_type & value):
-				left(NULL),
-				right(NULL),
-				parent(NULL),
-				color(RED),
-				m_value(value) {};
-			~rbNode() {};
-			rbNode	&operator=(const rbNode & rhs)
-			{
-				left = rhs.left;
-				right = rhs.right;
-				parent = rhs.parent;
-				color = rhs.color;
-				m_value = rhs.m_value;
-			};
 	};
 
 
@@ -181,8 +160,8 @@ namespace ft
 		typedef typename value_allocator_type::pointer			pointer;
 		typedef typename value_allocator_type::const_pointer	const_pointer;
 
-		typedef class rbNode<value_type>					node_type;
-		typedef class rbNode<const value_type>				const_node_type;
+		typedef rbNode<value_type>					node_type;
+		typedef rbNode<const value_type>				const_node_type;
 
 		typedef binary_tree_iterator<node_type *, rbTree, value_type>
 															iterator;
@@ -498,7 +477,10 @@ namespace ft
 		//check
 		node_type	*createNode(const value_type & value) {
 			node_type	*newNode = m_node_allocator.allocate(1);
-			m_node_allocator.construct(newNode, node_type(value));
+			newNode->color = RED;
+			newNode->left = NULL;
+			newNode->right = NULL;
+			newNode->parent = NULL;
 			m_value_allocator.construct(&newNode->m_value, value);
 			return newNode;
 		};
@@ -515,7 +497,7 @@ namespace ft
 				else if (delNode->parent->right == delNode)
 					delNode->parent->right = NULL;
 			};
-			m_node_allocator.destroy(delNode);
+			m_value_allocator.destroy(&(delNode->m_value));
 			m_node_allocator.deallocate(delNode, 1);
 		};
 		node_type	*BSTdeletion(node_type *node) {
