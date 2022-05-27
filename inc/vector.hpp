@@ -208,22 +208,29 @@ namespace ft
 		void		resize(size_type n, value_type val = value_type()) {
 			if (n > max_size())
 				throw std::length_error("vector: resize: requested size too big.");
+			//Maybe RED
+			// if (n < size())
+			// {
+			// 	iterator	newStart = allocator.allocate(n);
+
+			// 	for (size_type i = 0; i < n; ++i)
+			// 	{
+			// 		allocator.construct(newStart.base() + i, start[i]);
+			// 		allocator.destroy(start.base() + i);
+			// 	}
+			// 	for (size_type i = n; i < size(); ++i)
+			// 		allocator.destroy(start.base() + i);	
+			// 	if (start.base())
+			// 		allocator.deallocate(start.base(), capacity());
+			// 	start = newStart;
+			// 	finish = newStart + n;
+			// 	end_of_storage = newStart + n;
+			// }
 			if (n < size())
 			{
-				iterator	newStart = allocator.allocate(n);
-
-				for (size_type i = 0; i < n; ++i)
-				{
-					allocator.construct(newStart.base() + i, start[i]);
-					allocator.destroy(start.base() + i);
-				}
-				for (size_type i = n; i < size(); ++i)
-					allocator.destroy(start.base() + i);	
-				if (start.base())
-					allocator.deallocate(start.base(), capacity());
-				start = newStart;
-				finish = newStart + n;
-				end_of_storage = newStart + n;
+				for (size_type i = size(); i > n; --i)
+					allocator.destroy(start.base() + i - 1);
+				finish = start + n;
 			}
 			else if (n > size() && n < capacity())
 			{

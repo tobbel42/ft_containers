@@ -426,7 +426,6 @@ namespace ft
 
 		private:
 		/*Utils---------------------------------------------------------------*/
-		//Check but doubt
 		node_type	*mostLeft(node_type *node) const {
 			while (node && node->left && node != &m_loopback)
 				node = node->left;
@@ -437,7 +436,6 @@ namespace ft
 				node = node->right;
 			return (node);
 		};
-		//Not error proof against missuse
 		node_type *findSuccessor(node_type *node) const {
 			node_type *successor = node->right;
 			while (successor->left)
@@ -506,11 +504,6 @@ namespace ft
 		};
 		//check
 		void	removeNode(node_type *delNode) {
-
-			// std::cout << delNode->m_value << std::endl;
-			// std::cout << delNode << " "
-			// << m_root << " " << &m_loopback;
-
 			if (delNode == m_root)
 			{
 				m_loopback.left = &m_loopback;
@@ -521,9 +514,7 @@ namespace ft
 					delNode->parent->left = NULL;
 				else if (delNode->parent->right == delNode)
 					delNode->parent->right = NULL;
-			}
-			//TARGET
-			//m_value_allocator.destroy(&(delNode->m_value));
+			};
 			m_node_allocator.destroy(delNode);
 			m_node_allocator.deallocate(delNode, 1);
 		};
