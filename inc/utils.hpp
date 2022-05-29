@@ -1,7 +1,7 @@
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
-#include <algorithm>
+
 #include <iostream>
 
 namespace ft{
@@ -18,7 +18,6 @@ namespace ft{
   		bool operator() (const T& x, const T& y) const {return x<y;}
 	};
 
-	//redo
 	template <class InputIterator1, class InputIterator2>
 	bool equal ( InputIterator1 first1, InputIterator1 last1,
 				InputIterator2 first2 ) {
@@ -31,8 +30,8 @@ namespace ft{
 	};
 
 	template <class InputIterator1, class InputIterator2, class BinaryPredicate>
-		bool equal (InputIterator1 first1, InputIterator1 last1,
-            		InputIterator2 first2, BinaryPredicate pred) {
+	bool equal (InputIterator1 first1, InputIterator1 last1,
+            	InputIterator2 first2, BinaryPredicate pred) {
   		while (first1!=last1) {
     		if (!pred(*first1,*first2))
       			return false;

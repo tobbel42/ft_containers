@@ -3,7 +3,6 @@
 
 #include <memory>
 
-
 #include "iterator.hpp"
 #include "rbTree.hpp"
 #include "utils.hpp"
@@ -27,7 +26,6 @@ namespace ft {
 		typedef typename allocator_type::pointer			pointer;
 		typedef typename allocator_type::const_pointer		const_pointer;
 		typedef typename allocator_type::size_type			size_type;
-		//typedef	typename allocator_type::difference_type	difference_type;
 
 		class map_compare:
 		std::binary_function <value_type, value_type, bool> {
@@ -207,7 +205,6 @@ namespace ft {
 		};
 
 		/*Utils---------------------------------------------------------------*/
-		//need overhaul, infinity on empty map
 		void	printTree() { m_tree.printTree(); };
 
 		/*Allocator-----------------------------------------------------------*/

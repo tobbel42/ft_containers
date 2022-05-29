@@ -2,4 +2,4 @@
 obj/*
 own
 std
-inc/containers_test/
+containers_test/

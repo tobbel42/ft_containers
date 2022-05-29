@@ -19,7 +19,6 @@ namespace ft
 	class vector_iterator
 	{
 		public:
-		/*--------------------------------------------------------------------*/
 		/*Typedefs------------------------------------------------------------*/
 		typedef iterator<random_access_iterator_tag, T>	iterator_type;
 		typedef typename iterator_traits<iterator_type>::difference_type
@@ -208,24 +207,6 @@ namespace ft
 		void		resize(size_type n, value_type val = value_type()) {
 			if (n > max_size())
 				throw std::length_error("vector: resize: requested size too big.");
-			//Maybe RED
-			// if (n < size())
-			// {
-			// 	iterator	newStart = allocator.allocate(n);
-
-			// 	for (size_type i = 0; i < n; ++i)
-			// 	{
-			// 		allocator.construct(newStart.base() + i, start[i]);
-			// 		allocator.destroy(start.base() + i);
-			// 	}
-			// 	for (size_type i = n; i < size(); ++i)
-			// 		allocator.destroy(start.base() + i);	
-			// 	if (start.base())
-			// 		allocator.deallocate(start.base(), capacity());
-			// 	start = newStart;
-			// 	finish = newStart + n;
-			// 	end_of_storage = newStart + n;
-			// }
 			if (n < size())
 			{
 				for (size_type i = size(); i > n; --i)
@@ -258,7 +239,8 @@ namespace ft
 		};
 		void		reserve(size_type n) {
 			if (n > max_size())
-				throw std::length_error("vector: reserve: requested size too big.");
+				throw std::length_error(
+					"vector: reserve: requested size too big.");
 			if (n <= capacity())
 				return ;
 			iterator	newStart = allocator.allocate(n);

@@ -166,7 +166,6 @@ namespace ft {
 		};
 
 		/*Utils---------------------------------------------------------------*/
-		//need overhaul, infinity on empty set
 		void	printTree() { m_tree.printTree(); };
 
 		/*Allocator-----------------------------------------------------------*/

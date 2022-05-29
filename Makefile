@@ -20,10 +20,7 @@ HDR=$(addprefix $(INC)/, $(HFILE))
 
 SDIR=src
 
-SFILE=container_test.cpp
-#SFILE=main.cpp
-#SFILE=jstest.cpp
-#SFILE=jltest.cpp
+SFILE=containerTest.cpp
 
 SRC=$(addprefix $(SDIR)/, $(SFILE))
 
